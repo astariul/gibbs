@@ -1,10 +1,10 @@
-site_name: PyTeRe
-repo_url: "https://github.com/astariul/pytere"
-repo_name: "astariul/pytere"
+site_name: Gibbs
+repo_url: "https://github.com/astariul/gibbs"
+repo_name: "astariul/gibbs"
 
 theme:
   name: material
-  custom_dir: mkdocs
+  custom_dir: docs/mkdocs
   logo: "assets/flame.svg"
   favicon: "assets/flame.svg"
   features:
