@@ -1,6 +1,6 @@
-# pytere
+# gibbs
 
-::: pytere
+::: gibbs
     rendering:
       show_root_heading: False
       show_root_toc_entry: False
