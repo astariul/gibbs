@@ -4,7 +4,11 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-reqs = []
+reqs = [
+    "pyzmq~=22.3",
+    "msgpack~=1.0",
+    "loguru~=0.6",
+]
 
 extras_require = {
     "test": ["pytest~=7.0", "pytest-cov~=3.0", "coverage-badge~=1.0"],
