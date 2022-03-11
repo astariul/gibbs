@@ -31,7 +31,7 @@ async def simple_request(x: int):
     return {"result": model(x)}
 
 
-# Define the job of sub-process for this example
+# Define the sub-processes for this example
 def app_process():
     uvicorn.run(app, host="0.0.0.0", port=PORT)
 
@@ -41,8 +41,17 @@ def req_process(i):
     assert r.status_code == 200
 
 
+def time_parallel_requests(n):
+    with mp.Pool(n) as p:
+        t0 = time.time()
+        p.map(req_process, range(n))
+        t1 = time.time()
+
+    return t1 - t0
+
+
 def main():
-    # Start the (app in another process)
+    # Start the app (in another process)
     ap = mp.Process(target=app_process)
     ap.start()
 
@@ -52,13 +61,10 @@ def main():
     assert r.status_code == 200 and r.json() == {"result": 4}
 
     # Sends parallel requests and see how long it takes
-    with mp.Pool(N_REQUESTS) as p:
-        t0 = time.time()
-        p.map(req_process, range(N_REQUESTS))
-        t1 = time.time()
+    t = time_parallel_requests(N_REQUESTS)
 
     ap.terminate()
-    print(f"\nIt tooks {t1 - t0:.3f}s to process {N_REQUESTS} requests\n")
+    print(f"\nIt tooks {t:.3f}s to process {N_REQUESTS} requests\n")
 
 
 if __name__ == "__main__":
