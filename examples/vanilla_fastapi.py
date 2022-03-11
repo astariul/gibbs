@@ -16,7 +16,7 @@ class MySimpleModel:
     def __init__(self, comput_time=COMPUT_TIME):
         self.comput_time = comput_time
 
-    def request(self, x):
+    def __call__(self, x):
         time.sleep(self.comput_time)
         return x**2
 
@@ -28,7 +28,7 @@ model = MySimpleModel()
 
 @app.get("/request")
 async def simple_request(x: int):
-    return {"result": model.request(x)}
+    return {"result": model(x)}
 
 
 # Define the job of sub-process for this example
