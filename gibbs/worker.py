@@ -5,7 +5,8 @@ import msgpack
 import zmq
 from loguru import logger
 
-from gibbs import DEFAULT_PORT
+
+DEFAULT_PORT = 5019
 
 
 class Worker(Process):

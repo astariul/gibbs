@@ -3,6 +3,7 @@ import uuid
 
 import msgpack
 import zmq
+import zmq.asyncio
 from loguru import logger
 
 from gibbs import DEFAULT_PORT

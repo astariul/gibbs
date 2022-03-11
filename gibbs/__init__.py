@@ -1,5 +1,2 @@
 from .hub import Hub
-from .worker import Worker
-
-
-DEFAULT_PORT = 5019
+from .worker import DEFAULT_PORT, Worker
