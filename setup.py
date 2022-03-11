@@ -15,6 +15,7 @@ extras_require = {
     "hook": ["pre-commit~=2.15"],
     "lint": ["isort~=5.9", "black~=22.1", "flake518~=1.2", "darglint~=1.8"],
     "docs": ["mkdocs-material~=8.1", "mkdocstrings~=0.16", "mike~=1.1"],
+    "ex": ["fastapi~=0.75", "uvicorn~=0.17", "requests~=2.27"],
 }
 extras_require["all"] = sum(extras_require.values(), [])
 extras_require["dev"] = (
