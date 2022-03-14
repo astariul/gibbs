@@ -39,6 +39,7 @@ def app_process():
 def req_process(i):
     r = requests.get(f"http://localhost:{PORT}/request?x={i}")
     assert r.status_code == 200
+    return r.json()
 
 
 def time_parallel_requests(n):
@@ -57,8 +58,8 @@ def main():
 
     # Make sure the server had time to start and it's working properly
     time.sleep(0.1)
-    r = requests.get(f"http://localhost:{PORT}/request?x=2")
-    assert r.status_code == 200 and r.json() == {"result": 4}
+    r = req_process(2)
+    assert r == {"result": 4}
 
     # Sends parallel requests and see how long it takes
     t = time_parallel_requests(N_REQUESTS)
