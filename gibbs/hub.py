@@ -6,7 +6,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs import DEFAULT_PORT
+from gibbs.worker import DEFAULT_PORT
 
 
 RESPONSE_BUFFER_SIZE = 4096
