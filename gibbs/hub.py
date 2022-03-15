@@ -17,10 +17,8 @@ class Hub:
         super().__init__()
 
         self.port = port
-
         self.socket = None
-
-        self.ready_workers = asyncio.Queue()
+        self.ready_workers = None
         self.responses = {}
         self.req_states = {}
 
@@ -53,10 +51,11 @@ class Hub:
     async def request(self, *args, **kwargs):
         # Before anything, if the receiving loop was not started, start it
         if self.socket is None:
-            # Bind the socket for further communications
+            # Create what we need here in this process/context
             context = zmq.asyncio.Context()
             self.socket = context.socket(zmq.ROUTER)
             self.socket.bind(f"tcp://*:{self.port}")
+            self.ready_workers = asyncio.Queue()
 
             # Fire and forget : infinite loop, taking care of receiving stuff from the socket
             logger.info("Starting receiving loop...")
