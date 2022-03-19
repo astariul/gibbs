@@ -16,7 +16,7 @@ N_WORKERS = 2
 
 # Define a dummy model, simulating a non-negligible computation time
 # Basically same as in the example `vanilla_fastapi.py`, but the model inherit from Worker
-class MySimpleModel(Worker):
+class MySimpleModel:
     def __init__(self, comput_time=COMPUT_TIME):
         super().__init__()
         self.comput_time = comput_time
@@ -62,7 +62,7 @@ def main():
     ap.start()
 
     # Start the workers (in another process)
-    workers = [MySimpleModel() for _ in range(N_WORKERS)]
+    workers = [Worker(MySimpleModel) for _ in range(N_WORKERS)]
     for w in workers:
         w.start()
 
