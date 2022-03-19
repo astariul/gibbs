@@ -10,17 +10,21 @@ DEFAULT_PORT = 5019
 
 
 class Worker(Process):
-    def __init__(self, host="localhost", port=DEFAULT_PORT):
+    def __init__(self, worker_cls, *args, gibbs_host="localhost", gibbs_port=DEFAULT_PORT, **kwargs):
         super().__init__()
 
-        self.identity = uuid.uuid4().hex
-        self.host = host
-        self.port = port
+        self.worker_cls = worker_cls
+        self.worker_args = args
+        self.worker_kwargs = kwargs
 
-    def __call__(self, *args, **kwargs):
-        raise NotImplementedError("Missing implementation for `__call__` method, please overwrite it")
+        self.identity = uuid.uuid4().hex
+        self.host = gibbs_host
+        self.port = gibbs_port
 
     def run(self):
+        # Instanciate the worker
+        worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
+
         # Create the context for the socket
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
@@ -41,8 +45,8 @@ class Worker(Process):
             req_id, req_args, req_kwargs = msgpack.unpackb(workload)
             logger.debug(f"Request #{req_id} received")
 
-            # Call user's code with the request arguments
-            res = self(*req_args, **req_kwargs)
+            # Call worker's code with the request arguments
+            res = worker(*req_args, **req_kwargs)
 
             logger.debug("Sending back the response")
             socket.send(msgpack.packb([req_id, res]))
