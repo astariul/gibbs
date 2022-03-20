@@ -83,3 +83,6 @@ class Hub:
         self.req_states.pop(req_id)
 
         return res
+
+    def __del__(self):
+        self.socket.close()
