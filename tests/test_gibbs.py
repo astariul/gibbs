@@ -81,3 +81,8 @@ async def test_parallel_worker(unused_tcp_port):
 
     for w in workers:
         w.terminate()
+
+
+def test_del_hub_without_starting_recv_loop():
+    h = Hub()
+    h.__del__()
