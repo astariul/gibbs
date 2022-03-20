@@ -1,5 +1,3 @@
-import pytest
-
 from gibbs import Hub, Worker
 
 
@@ -21,7 +19,6 @@ class TWorker:
         }
 
 
-@pytest.mark.asyncio
 async def test_hub_worker_communication():
     # Just start 1 worker and 1 hub and ensure they can properly communicate.
     w = Worker(TWorker, 1, 2, key_1=3, key_2=4)

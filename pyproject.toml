@@ -3,6 +3,7 @@ addopts = "-W ignore::DeprecationWarning --cov=gibbs --no-cov-on-fail"
 testpaths = [
     "tests",
 ]
+asyncio_mode = "auto"
 
 [tool.black]
 line-length = 119
