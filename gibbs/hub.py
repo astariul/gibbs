@@ -85,4 +85,5 @@ class Hub:
         return res
 
     def __del__(self):
-        self.socket.close()
+        if self.socket is not None:
+            self.socket.close()
