@@ -681,6 +681,9 @@ Hub        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">req_id</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
@@ -746,6 +749,7 @@ Hub        </code>
     </div>
 
   </div>
+
 
 
 
