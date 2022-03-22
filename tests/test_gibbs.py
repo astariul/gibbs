@@ -1,6 +1,8 @@
 import asyncio
 import time
 
+import pytest
+
 from gibbs import Hub, Worker
 
 
@@ -83,6 +85,13 @@ async def test_parallel_worker(unused_tcp_port):
         w.terminate()
 
 
+async def test_del_hub_with_recv_loop():
+    h = Hub()
+    t = asyncio.create_task(h.request(3))
+    h.__del__()
+    t.cancel()
+
+
 def test_del_hub_without_starting_recv_loop():
     h = Hub()
     h.__del__()
@@ -116,3 +125,24 @@ async def test_overload_response_buffer(unused_tcp_port):
 
     for w in workers:
         w.terminate()
+
+
+class TWorkerCrash:
+    def __init__(self, in_init=False, in_call=False):
+        super().__init__()
+
+        if in_init:
+            raise ValueError("Simulated crash in __init__()")
+        self.in_call = in_call
+
+    def __call__(self, x):
+        if self.in_call:
+            raise ValueError("Simulated crash in __call__()")
+        return x**2
+
+
+def test_user_defined_code_crash_in_init():
+    # If something crash in init, nothing to do, just let the worker crash
+    w = Worker(TWorkerCrash, in_init=True)
+    with pytest.raises(ValueError):
+        w.run()
