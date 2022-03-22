@@ -86,3 +86,33 @@ async def test_parallel_worker(unused_tcp_port):
 def test_del_hub_without_starting_recv_loop():
     h = Hub()
     h.__del__()
+
+
+class TWorkerSlow:
+    def __call__(self, x):
+        time.sleep(0.1)
+        return x**2
+
+
+async def test_overload_response_buffer(unused_tcp_port):
+    # Starts 2 slow workers and 1 fast worker
+    workers = [Worker(TWorkerSlow, gibbs_port=unused_tcp_port) for _ in range(3)]
+    for w in workers:
+        w.start()
+
+    # Set the buffer size to 2 so the third request will erase the first one
+    h = Hub(port=unused_tcp_port, resp_buffer_size=2)
+
+    # Fire 3 requests
+    reqs = [asyncio.create_task(h.request(i)) for i in range(3)]
+
+    # Since the third requests erases the first one in the Hub, we will wait
+    # indefinitely... Since each request takes 0.1s, set a big enough timeout
+    done, pending = await asyncio.wait(reqs, timeout=0.3)
+
+    assert reqs[0] in pending
+    assert reqs[1] in done
+    assert reqs[2] in done
+
+    for w in workers:
+        w.terminate()

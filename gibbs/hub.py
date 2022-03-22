@@ -13,10 +13,11 @@ RESPONSE_BUFFER_SIZE = 4096
 
 
 class Hub:
-    def __init__(self, port=DEFAULT_PORT):
+    def __init__(self, port=DEFAULT_PORT, resp_buffer_size=RESPONSE_BUFFER_SIZE):
         super().__init__()
 
         self.port = port
+        self.resp_buffer_size = resp_buffer_size
         self.socket = None
         self.ready_workers = None
         self.responses = {}
@@ -38,15 +39,24 @@ class Hub:
                 logger.debug(f"Received response from request #{req_id}")
 
                 # Ensure we don't store too many requests
-                if len(self.responses) > RESPONSE_BUFFER_SIZE:
-                    logger.warning(f"Response buffer overflow (>{RESPONSE_BUFFER_SIZE}). Forgetting oldest response")
-                    # Forget the oldest one
-                    self.responses.pop(list(self.responses.keys())[0])
-                    self.req_states.pop(list(self.req_states.keys())[0])
+                if len(self.req_states) > self.resp_buffer_size:
+                    # If it's the case, forget the oldest one
+                    k = list(self.req_states.keys())[0]
+                    logger.warning(
+                        f"Response buffer overflow (>{self.resp_buffer_size}). Forgetting oldest request : {k}"
+                    )
+                    self.req_states.pop(k)
+                    self.responses.pop(k, None)
 
                 # Store the response and set the Event
-                self.responses[req_id] = res
-                self.req_states[req_id].set()
+                if req_id in self.req_states:
+                    self.responses[req_id] = res
+                    self.req_states[req_id].set()
+                else:
+                    logger.warning(
+                        f"Request #{req_id} was previously removed from response buffer. "
+                        f"Ignoring the response from this request..."
+                    )
 
     async def request(self, *args, **kwargs):
         # Before anything, if the receiving loop was not started, start it
