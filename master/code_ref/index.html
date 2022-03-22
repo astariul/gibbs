@@ -611,10 +611,11 @@ Hub        </code>
         <details class="quote">
           <summary>Source code in <code>gibbs/hub.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Hub</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">resp_buffer_size</span><span class="o">=</span><span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span> <span class="o">=</span> <span class="n">resp_buffer_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">responses</span> <span class="o">=</span> <span class="p">{}</span>
@@ -636,15 +637,24 @@ Hub        </code>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="c1"># Ensure we don&#39;t store too many requests</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="n">RESPONSE_BUFFER_SIZE</span><span class="si">}</span><span class="s2">). Forgetting oldest response&quot;</span><span class="p">)</span>
-                    <span class="c1"># Forget the oldest one</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
+                    <span class="c1"># If it&#39;s the case, forget the oldest one</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
                 <span class="c1"># Store the response and set the Event</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
+                    <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Before anything, if the receiving loop was not started, start it</span>
@@ -736,15 +746,24 @@ Hub        </code>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Ensure we don&#39;t store too many requests</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="n">RESPONSE_BUFFER_SIZE</span><span class="si">}</span><span class="s2">). Forgetting oldest response&quot;</span><span class="p">)</span>
-                <span class="c1"># Forget the oldest one</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
+                <span class="c1"># If it&#39;s the case, forget the oldest one</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="c1"># Store the response and set the Event</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
+                <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
