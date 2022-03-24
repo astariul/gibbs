@@ -6,7 +6,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs.worker import DEFAULT_PORT
+from gibbs.worker import CODE_FAILURE, DEFAULT_PORT
 
 
 RESPONSE_BUFFER_SIZE = 4096
@@ -91,16 +91,17 @@ class Hub:
         await self.req_states[req_id].wait()
         logger.debug(f"Accessing result for request #{req_id}")
 
-        # Once we get it, access the result and return it
+        # Once we get it, access the result
         code, res = self.responses.pop(req_id)
-
-        if code == 1:
-            raise UserCodeException(res)
 
         # Don't forget to remove the event
         self.req_states.pop(req_id)
 
-        return res
+        # Depending on what is the response, deal with it properly
+        if code == CODE_FAILURE:
+            raise UserCodeException(res)
+        else:
+            return res
 
     def __del__(self):
         if self.socket is not None:

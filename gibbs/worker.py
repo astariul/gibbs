@@ -8,6 +8,8 @@ from loguru import logger
 
 
 DEFAULT_PORT = 5019
+CODE_SUCCESS = 0
+CODE_FAILURE = 1
 
 
 class Worker(Process):
@@ -51,7 +53,7 @@ class Worker(Process):
                 res = worker(*req_args, **req_kwargs)
             except Exception as e:
                 logger.warning(f"Exception in user-defined __call__ method : {e.__class__.__name__}({str(e)})")
-                socket.send(msgpack.packb([req_id, 1, traceback.format_exc()]))
+                socket.send(msgpack.packb([req_id, CODE_FAILURE, traceback.format_exc()]))
             else:
                 logger.debug("Sending back the response")
-                socket.send(msgpack.packb([req_id, 0, res]))
+                socket.send(msgpack.packb([req_id, CODE_SUCCESS, res]))
