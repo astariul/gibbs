@@ -32,36 +32,37 @@ class Hub:
         """Infinite loop for receiving responses from the workers."""
         while True:
             # Receive stuff
-            address, _, resp = await self.socket.recv_multipart()
+            address, *frames = await self.socket.recv_multipart()
             logger.debug(f"Received something from worker #{address}")
 
             # Since we received a response from this worker, it means it's ready for more !
             await self.ready_workers.put(address)
 
-            # Check if the response is a prediction or just a ready message
-            if resp != b"":
-                req_id, code, res = msgpack.unpackb(resp)
-                logger.debug(f"Received response from request #{req_id}")
+            if len(frames) == 1:
+                # Just a ready message
+                continue
 
-                # Ensure we don't store too many requests
-                if len(self.req_states) > self.resp_buffer_size:
-                    # If it's the case, forget the oldest one
-                    k = list(self.req_states.keys())[0]
-                    logger.warning(
-                        f"Response buffer overflow (>{self.resp_buffer_size}). Forgetting oldest request : {k}"
-                    )
-                    self.req_states.pop(k)
-                    self.responses.pop(k, None)
+            _, resp = frames
+            req_id, code, res = msgpack.unpackb(resp)
+            logger.debug(f"Received response from request #{req_id}")
 
-                # Store the response and set the Event
-                if req_id in self.req_states:
-                    self.responses[req_id] = (code, res)
-                    self.req_states[req_id].set()
-                else:
-                    logger.warning(
-                        f"Request #{req_id} was previously removed from response buffer. "
-                        f"Ignoring the response from this request..."
-                    )
+            # Ensure we don't store too many requests
+            if len(self.req_states) > self.resp_buffer_size:
+                # If it's the case, forget the oldest one
+                k = list(self.req_states.keys())[0]
+                logger.warning(f"Response buffer overflow (>{self.resp_buffer_size}). Forgetting oldest request : {k}")
+                self.req_states.pop(k)
+                self.responses.pop(k, None)
+
+            # Store the response and set the Event
+            if req_id in self.req_states:
+                self.responses[req_id] = (code, res)
+                self.req_states[req_id].set()
+            else:
+                logger.warning(
+                    f"Request #{req_id} was previously removed from response buffer. "
+                    f"Ignoring the response from this request..."
+                )
 
     async def request(self, *args, **kwargs):
         # Before anything, if the receiving loop was not started, start it

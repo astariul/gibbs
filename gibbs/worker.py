@@ -30,7 +30,7 @@ class Worker(Process):
 
         # Create the context for the socket
         context = zmq.Context()
-        socket = context.socket(zmq.REQ)
+        socket = context.socket(zmq.DEALER)
         socket.setsockopt_string(zmq.IDENTITY, self.identity)
 
         # Connect to the Hub
@@ -44,7 +44,7 @@ class Worker(Process):
         # we wait for the next one
         while True:
             logger.debug("Waiting for request...")
-            workload = socket.recv()
+            _, workload = socket.recv_multipart()
             req_id, req_args, req_kwargs = msgpack.unpackb(workload)
             logger.debug(f"Request #{req_id} received")
 
@@ -53,7 +53,7 @@ class Worker(Process):
                 res = worker(*req_args, **req_kwargs)
             except Exception as e:
                 logger.warning(f"Exception in user-defined __call__ method : {e.__class__.__name__}({str(e)})")
-                socket.send(msgpack.packb([req_id, CODE_FAILURE, traceback.format_exc()]))
+                socket.send_multipart([b"", msgpack.packb([req_id, CODE_FAILURE, traceback.format_exc()])])
             else:
                 logger.debug("Sending back the response")
-                socket.send(msgpack.packb([req_id, CODE_SUCCESS, res]))
+                socket.send_multipart([b"", msgpack.packb([req_id, CODE_SUCCESS, res])])
