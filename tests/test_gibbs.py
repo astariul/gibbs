@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from gibbs import Hub, Worker
+from gibbs import Hub, UserCodeException, Worker
 
 
 COMPUTATION_TIME = 0.1
@@ -146,3 +146,15 @@ def test_user_defined_code_crash_in_init():
     w = Worker(TWorkerCrash, in_init=True)
     with pytest.raises(ValueError):
         w.run()
+
+
+async def test_user_defined_code_crash_in_call(unused_tcp_port):
+    w = Worker(TWorkerCrash, in_call=True, gibbs_port=unused_tcp_port)
+    w.start()
+
+    h = Hub(port=unused_tcp_port)
+
+    with pytest.raises(UserCodeException):
+        await h.request(4)
+
+    w.terminate()
