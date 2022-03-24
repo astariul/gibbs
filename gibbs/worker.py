@@ -1,3 +1,4 @@
+import traceback
 import uuid
 from multiprocessing import Process
 
@@ -46,7 +47,11 @@ class Worker(Process):
             logger.debug(f"Request #{req_id} received")
 
             # Call worker's code with the request arguments
-            res = worker(*req_args, **req_kwargs)
-
-            logger.debug("Sending back the response")
-            socket.send(msgpack.packb([req_id, res]))
+            try:
+                res = worker(*req_args, **req_kwargs)
+            except Exception as e:
+                logger.warning(f"Exception in user-defined __call__ method : {e.__class__.__name__}({str(e)})")
+                socket.send(msgpack.packb([req_id, 1, traceback.format_exc()]))
+            else:
+                logger.debug("Sending back the response")
+                socket.send(msgpack.packb([req_id, 0, res]))

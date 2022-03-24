@@ -12,6 +12,11 @@ from gibbs.worker import DEFAULT_PORT
 RESPONSE_BUFFER_SIZE = 4096
 
 
+class UserCodeException(Exception):
+    def __init__(self, t):
+        super().__init__(f"Exception raised in user-defined code. Traceback :\n{t}")
+
+
 class Hub:
     def __init__(self, port=DEFAULT_PORT, resp_buffer_size=RESPONSE_BUFFER_SIZE):
         super().__init__()
@@ -35,7 +40,7 @@ class Hub:
 
             # Check if the response is a prediction or just a ready message
             if resp != b"":
-                req_id, res = msgpack.unpackb(resp)
+                req_id, code, res = msgpack.unpackb(resp)
                 logger.debug(f"Received response from request #{req_id}")
 
                 # Ensure we don't store too many requests
@@ -50,7 +55,7 @@ class Hub:
 
                 # Store the response and set the Event
                 if req_id in self.req_states:
-                    self.responses[req_id] = res
+                    self.responses[req_id] = (code, res)
                     self.req_states[req_id].set()
                 else:
                     logger.warning(
@@ -87,7 +92,10 @@ class Hub:
         logger.debug(f"Accessing result for request #{req_id}")
 
         # Once we get it, access the result and return it
-        res = self.responses.pop(req_id)
+        code, res = self.responses.pop(req_id)
+
+        if code == 1:
+            raise UserCodeException(res)
 
         # Don't forget to remove the event
         self.req_states.pop(req_id)
