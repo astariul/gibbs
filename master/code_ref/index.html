@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/flame.svg">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.6">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.7">
     
     
       
@@ -612,13 +612,17 @@ Hub        </code>
         <details class="quote">
           <summary>Source code in <code>gibbs/hub.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Hub</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">resp_buffer_size</span><span class="o">=</span><span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">heartbeat_interval</span><span class="o">=</span><span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span> <span class="n">resp_buffer_size</span><span class="o">=</span><span class="n">RESPONSE_BUFFER_SIZE</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">heartbeat_interval</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span> <span class="o">=</span> <span class="n">resp_buffer_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">responses</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -626,36 +630,42 @@ Hub        </code>
         <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Receive stuff</span>
-            <span class="n">address</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
+            <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="p">[</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
-            <span class="c1"># Check if the response is a prediction or just a ready message</span>
-            <span class="k">if</span> <span class="n">resp</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Answer the Ping</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+                <span class="k">continue</span>
 
-                <span class="c1"># Ensure we don&#39;t store too many requests</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
-                    <span class="c1"># If it&#39;s the case, forget the oldest one</span>
-                    <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
+            <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-                <span class="c1"># Store the response and set the Event</span>
-                <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
-                    <span class="p">)</span>
+            <span class="c1"># Ensure we don&#39;t store too many requests</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
+                <span class="c1"># If it&#39;s the case, forget the oldest one</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># Store the response and set the Event</span>
+            <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
+                <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Before anything, if the receiving loop was not started, start it</span>
@@ -664,7 +674,7 @@ Hub        </code>
             <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://*:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Condition</span><span class="p">()</span>
 
             <span class="c1"># Fire and forget : infinite loop, taking care of receiving stuff from the socket</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting receiving loop...&quot;</span><span class="p">)</span>
@@ -677,7 +687,7 @@ Hub        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
 
         <span class="c1"># Send the request</span>
-        <span class="n">address</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ready_worker</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sending request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> to worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">])])</span>
 
@@ -696,6 +706,20 @@ Hub        </code>
             <span class="k">raise</span> <span class="n">UserCodeException</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_ready_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="p">:</span>
+            <span class="c1"># Iterate workers until we find one that was alive recently</span>
+            <span class="n">w_alive</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">w_alive</span><span class="p">:</span>
+                <span class="c1"># If no workers are available, wait...</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+                <span class="n">address</span><span class="p">,</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+                <span class="n">w_alive</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span>
+
+            <span class="k">return</span> <span class="n">address</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -739,36 +763,42 @@ Hub        </code>
     <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># Receive stuff</span>
-        <span class="n">address</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
+        <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ready_workers</span><span class="p">[</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workers_c</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
-        <span class="c1"># Check if the response is a prediction or just a ready message</span>
-        <span class="k">if</span> <span class="n">resp</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Answer the Ping</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+            <span class="k">continue</span>
 
-            <span class="c1"># Ensure we don&#39;t store too many requests</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
-                <span class="c1"># If it&#39;s the case, forget the oldest one</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Store the response and set the Event</span>
-            <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
-                <span class="p">)</span>
+        <span class="c1"># Ensure we don&#39;t store too many requests</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="p">:</span>
+            <span class="c1"># If it&#39;s the case, forget the oldest one</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response buffer overflow (&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_buffer_size</span><span class="si">}</span><span class="s2">). Forgetting oldest request : </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Store the response and set the Event</span>
+        <span class="k">if</span> <span class="n">req_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">req_states</span><span class="p">[</span><span class="n">req_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> was previously removed from response buffer. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Ignoring the response from this request...&quot;</span>
+            <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -828,6 +858,9 @@ Hub        </code>
 
 
 
+
+
+
   <div class="doc doc-object doc-class">
 
 
@@ -847,7 +880,15 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
         <details class="quote">
           <summary>Source code in <code>gibbs/worker.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">gibbs_host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">gibbs_port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">worker_cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">gibbs_host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="n">gibbs_port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span>
+        <span class="n">gibbs_heartbeat_interval</span><span class="o">=</span><span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span> <span class="o">=</span> <span class="n">worker_cls</span>
@@ -857,6 +898,7 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
         <span class="bp">self</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">gibbs_host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">gibbs_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">gibbs_heartbeat_interval</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Instanciate the worker</span>
@@ -864,21 +906,54 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
 
         <span class="c1"># Create the context for the socket</span>
         <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-        <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+        <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
 
         <span class="c1"># Connect to the Hub</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Tell the Hub we are ready</span>
-        <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
+        <span class="n">ping_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">pong_ts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
         <span class="c1"># we wait for the next one</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
-            <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">workload</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pong_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">ts</span> <span class="o">-</span> <span class="n">pong_ts</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="ow">and</span> <span class="n">ts</span> <span class="o">-</span> <span class="n">ping_ts</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">missed_pong</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># Reset the socket</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The Hub is not answering... Resetting the socket&quot;</span><span class="p">)</span>
+                        <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+                        <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+                        <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="c1"># We didn&#39;t receive anything for some time, send a ping</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Didn&#39;t receive anything for some time, sending a ping&quot;</span><span class="p">)</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
+                    <span class="n">ping_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="n">missed_pong</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="c1"># Just a Pong, ignore it</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># From here the Hub sent us an actual request</span>
             <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
 
@@ -887,10 +962,10 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
                 <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-                <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()]))</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
-                <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">]))</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
 </code></pre></div>
         </details>
 
@@ -929,21 +1004,54 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
 
     <span class="c1"># Create the context for the socket</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-    <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+    <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
     <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
 
     <span class="c1"># Connect to the Hub</span>
     <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Tell the Hub we are ready</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
+    <span class="n">ping_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">pong_ts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
     <span class="c1"># we wait for the next one</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
-        <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">workload</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">pong_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ts</span> <span class="o">-</span> <span class="n">pong_ts</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="ow">and</span> <span class="n">ts</span> <span class="o">-</span> <span class="n">ping_ts</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">missed_pong</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Reset the socket</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The Hub is not answering... Resetting the socket&quot;</span><span class="p">)</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">missed_pong</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># We didn&#39;t receive anything for some time, send a ping</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Didn&#39;t receive anything for some time, sending a ping&quot;</span><span class="p">)</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
+                <span class="n">ping_ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">missed_pong</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="c1"># Just a Pong, ignore it</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># From here the Hub sent us an actual request</span>
         <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
 
@@ -952,10 +1060,10 @@ Worker            (<span title="multiprocessing.context.Process">Process</span>)
             <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()]))</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
-            <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">]))</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
 </code></pre></div>
         </details>
     </div>
