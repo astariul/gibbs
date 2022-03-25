@@ -7,7 +7,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs.worker import CODE_FAILURE, DEFAULT_PORT, HEARTBEAT_INTERVAL
+from gibbs.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT
 
 
 RESPONSE_BUFFER_SIZE = 4096
@@ -19,10 +19,13 @@ class UserCodeException(Exception):
 
 
 class Hub:
-    def __init__(self, port=DEFAULT_PORT, resp_buffer_size=RESPONSE_BUFFER_SIZE):
+    def __init__(
+        self, port=DEFAULT_PORT, heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL, resp_buffer_size=RESPONSE_BUFFER_SIZE
+    ):
         super().__init__()
 
         self.port = port
+        self.heartbeat_t = heartbeat_interval
         self.resp_buffer_size = resp_buffer_size
         self.socket = None
         self.workers_c = None
@@ -121,7 +124,7 @@ class Hub:
                     await self.workers_c.wait()
 
                 address, ts = self.ready_workers.popitem()
-                w_alive = time.time() - ts < HEARTBEAT_INTERVAL
+                w_alive = time.time() - ts < self.heartbeat_t
 
             return address
 

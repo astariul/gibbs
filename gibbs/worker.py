@@ -9,15 +9,23 @@ from loguru import logger
 
 
 DEFAULT_PORT = 5019
+DEFAULT_HEARTBEAT_INTERVAL = 1
+MS = 1000
 CODE_SUCCESS = 0
 CODE_FAILURE = 1
-HEARTBEAT_INTERVAL = 1
-MS = 1000
 PING = b""
 
 
 class Worker(Process):
-    def __init__(self, worker_cls, *args, gibbs_host="localhost", gibbs_port=DEFAULT_PORT, **kwargs):
+    def __init__(
+        self,
+        worker_cls,
+        *args,
+        gibbs_host="localhost",
+        gibbs_port=DEFAULT_PORT,
+        gibbs_heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL,
+        **kwargs,
+    ):
         super().__init__()
 
         self.worker_cls = worker_cls
@@ -27,6 +35,7 @@ class Worker(Process):
         self.identity = uuid.uuid4().hex
         self.host = gibbs_host
         self.port = gibbs_port
+        self.heartbeat_t = gibbs_heartbeat_interval
 
     def run(self):
         # Instanciate the worker
@@ -51,14 +60,14 @@ class Worker(Process):
         # we wait for the next one
         while True:
             logger.debug("Waiting for request...")
-            if socket.poll(HEARTBEAT_INTERVAL * MS // 4, zmq.POLLIN):
+            if socket.poll(self.heartbeat_t * MS // 4, zmq.POLLIN):
                 _, workload = socket.recv_multipart(zmq.NOBLOCK)
                 logger.debug(f"Received {workload}")
                 pong_ts = time.time()
                 missed_pong = 0
             else:
                 ts = time.time()
-                if ts - pong_ts > HEARTBEAT_INTERVAL and ts - ping_ts > HEARTBEAT_INTERVAL:
+                if ts - pong_ts > self.heartbeat_t and ts - ping_ts > self.heartbeat_t:
                     # We didn't receive anything for some time, send a ping
                     logger.debug("Didn't receive anything for some time, sending a ping")
                     socket.send(PING)

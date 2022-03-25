@@ -190,11 +190,11 @@ async def test_workers_roll(unused_tcp_port):
 
 
 async def test_worker_crash_but_next_request_is_correctly_send_to_alive_worker(unused_tcp_port):
-    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port) for i in range(2)]
+    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1) for i in range(2)]
     for w in workers:
         w.start()
 
-    h = Hub(port=unused_tcp_port)
+    h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
 
     # Send requests to make sure both workers are working fine
     res = await asyncio.gather(h.request(1), h.request(1))
@@ -204,7 +204,7 @@ async def test_worker_crash_but_next_request_is_correctly_send_to_alive_worker(u
     workers[0].terminate()
 
     # Wait a bit : without heartbeat, the hub knows this worker is dead
-    await asyncio.sleep(1.1)
+    await asyncio.sleep(0.15)
 
     # Send requests again : both requests are processed by the left alive worker
     res = await asyncio.gather(h.request(1), h.request(1))
