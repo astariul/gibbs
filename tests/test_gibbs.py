@@ -1,5 +1,6 @@
 import asyncio
 import time
+from collections import Counter
 
 import pytest
 
@@ -156,5 +157,120 @@ async def test_user_defined_code_crash_in_call(unused_tcp_port):
 
     with pytest.raises(UserCodeException):
         await h.request(4)
+
+    w.terminate()
+
+
+class TWorkerId:
+    def __init__(self, i):
+        super().__init__()
+
+        self.i = i
+
+    def __call__(self, x):
+        time.sleep(0.1)
+        return x * self.i
+
+
+async def test_workers_roll(unused_tcp_port):
+    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port) for i in range(2)]
+    for w in workers:
+        w.start()
+
+    h = Hub(port=unused_tcp_port)
+
+    # 4 requests : 2 should go to worker #1, 2 should go to worker #2
+    res = await asyncio.gather(h.request(1), h.request(1), h.request(1), h.request(1))
+
+    c = Counter(res)
+    assert c[1] == 2 and c[2] == 2
+
+    for w in workers:
+        w.terminate()
+
+
+async def test_worker_crash_but_next_request_is_correctly_send_to_alive_worker(unused_tcp_port):
+    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1) for i in range(2)]
+    for w in workers:
+        w.start()
+
+    h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
+
+    # Send requests to make sure both workers are working fine
+    res = await asyncio.gather(h.request(1), h.request(1))
+    assert 1 in res and 2 in res
+
+    # Simulate a crash in one of the worker
+    workers[0].terminate()
+
+    # Wait a bit : without heartbeat, the hub knows this worker is dead
+    await asyncio.sleep(0.15)
+
+    # Send requests again : both requests are processed by the left alive worker
+    res = await asyncio.gather(h.request(1), h.request(1))
+    assert res == [2, 2]
+
+    workers[1].terminate()
+
+
+class TWorkerFast:
+    def __call__(self, x):
+        return x**2
+
+
+async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1)
+    w.start()
+
+    h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
+
+    # Send a request to make sure the worker is fine
+    res = await h.request(4)
+    assert res == 16
+
+    # Simulate a worker crash
+    w.terminate()
+
+    # Wait a bit : without heartbeat, the hub knows this worker is dead
+    await asyncio.sleep(0.15)
+
+    # Fire a request : no one will answer it because there is no worker
+    req = asyncio.create_task(h.request(3))
+    done, pending = await asyncio.wait([req], timeout=0.1)
+    assert req in pending
+
+    # Restart a worker
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port)
+    w.start()
+
+    # Since we have a worker, the request was processed
+    done, pending = await asyncio.wait([req], timeout=0.1)
+    assert req in done
+
+    w.terminate()
+
+
+async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1)
+    w.start()
+
+    h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
+
+    # Send a request to make sure the worker is fine
+    res = await h.request(3)
+    assert res == 9
+
+    # Simulate a hub crash
+    h.__del__()
+
+    # Wait a bit : without heartbeat response, the worker will know the hub is dead
+    await asyncio.sleep(0.4)
+
+    # Recreate a brand new hub, the worker will automatically try to reconnect
+    h2 = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
+
+    # Send a request to sure the worker is fine
+    res = await h2.request(5)
+    assert res == 25
 
     w.terminate()
