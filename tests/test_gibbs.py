@@ -211,3 +211,40 @@ async def test_worker_crash_but_next_request_is_correctly_send_to_alive_worker(u
     assert res == [2, 2]
 
     workers[1].terminate()
+
+
+class TWorkerFast:
+    def __call__(self, x):
+        return x**2
+
+
+async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1)
+    w.start()
+
+    h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
+
+    # Send a request to make sure the worker is fine
+    res = await h.request(4)
+    assert res == 16
+
+    # Simulate a worker crash
+    w.terminate()
+
+    # Wait a bit : without heartbeat, the hub knows this worker is dead
+    await asyncio.sleep(0.15)
+
+    # Fire a request : no one will answer it because there is no worker
+    req = asyncio.create_task(h.request(3))
+    done, pending = await asyncio.wait([req], timeout=0.1)
+    assert req in pending
+
+    # Restart a worker
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port)
+    w.start()
+
+    # Since we have a worker, the request was processed
+    done, pending = await asyncio.wait([req], timeout=0.1)
+    assert req in done
+
+    w.terminate()
