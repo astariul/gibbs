@@ -264,7 +264,7 @@ async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
     h.__del__()
 
     # Wait a bit : without heartbeat response, the worker will know the hub is dead
-    await asyncio.sleep(0.25)
+    await asyncio.sleep(0.4)
 
     # Recreate a brand new hub, the worker will automatically try to reconnect
     h2 = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
