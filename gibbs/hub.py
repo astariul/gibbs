@@ -121,7 +121,7 @@ class Hub:
                     await self.workers_c.wait()
 
                 address, ts = self.ready_workers.popitem()
-                w_alive = time.time() - ts < HEARTBEAT_INTERVAL * 2
+                w_alive = time.time() - ts < HEARTBEAT_INTERVAL
 
             return address
 
