@@ -1,4 +1,5 @@
 import asyncio
+import time
 import uuid
 
 import msgpack
@@ -6,7 +7,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs.worker import CODE_FAILURE, DEFAULT_PORT
+from gibbs.worker import CODE_FAILURE, DEFAULT_PORT, HEARTBEAT_INTERVAL
 
 
 RESPONSE_BUFFER_SIZE = 4096
@@ -24,7 +25,8 @@ class Hub:
         self.port = port
         self.resp_buffer_size = resp_buffer_size
         self.socket = None
-        self.ready_workers = None
+        self.workers_c = None
+        self.ready_workers = {}
         self.responses = {}
         self.req_states = {}
 
@@ -32,14 +34,19 @@ class Hub:
         """Infinite loop for receiving responses from the workers."""
         while True:
             # Receive stuff
+            logger.debug("Receiving...")
             address, *frames = await self.socket.recv_multipart()
             logger.debug(f"Received something from worker #{address}")
 
             # Since we received a response from this worker, it means it's ready for more !
-            await self.ready_workers.put(address)
+            async with self.workers_c:
+                self.ready_workers[address] = time.time()
+                self.workers_c.notify()
 
             if len(frames) == 1:
-                # Just a ready message
+                # Answer the Ping
+                logger.debug("Answering the ping")
+                await self.socket.send_multipart([address, b"", b""])
                 continue
 
             _, resp = frames
@@ -71,7 +78,7 @@ class Hub:
             context = zmq.asyncio.Context()
             self.socket = context.socket(zmq.ROUTER)
             self.socket.bind(f"tcp://*:{self.port}")
-            self.ready_workers = asyncio.Queue()
+            self.workers_c = asyncio.Condition()
 
             # Fire and forget : infinite loop, taking care of receiving stuff from the socket
             logger.info("Starting receiving loop...")
@@ -84,7 +91,7 @@ class Hub:
         self.req_states[req_id] = asyncio.Event()
 
         # Send the request
-        address = await self.ready_workers.get()
+        address = await self._get_ready_worker()
         logger.debug(f"Sending request #{req_id} to worker #{address}")
         await self.socket.send_multipart([address, b"", msgpack.packb([req_id, args, kwargs])])
 
@@ -103,6 +110,20 @@ class Hub:
             raise UserCodeException(res)
         else:
             return res
+
+    async def _get_ready_worker(self):
+        async with self.workers_c:
+            # Iterate workers until we find one that was alive recently
+            w_alive = False
+            while not w_alive:
+                # If no workers are available, wait...
+                if not self.ready_workers:
+                    await self.workers_c.wait()
+
+                address, ts = self.ready_workers.popitem()
+                w_alive = time.time() - ts < HEARTBEAT_INTERVAL * 2
+
+            return address
 
     def __del__(self):
         if self.socket is not None:
