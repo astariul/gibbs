@@ -68,24 +68,20 @@ class Worker(Process):
             else:
                 ts = time.time()
                 if ts - pong_ts > self.heartbeat_t and ts - ping_ts > self.heartbeat_t:
+                    if missed_pong > 1:
+                        # Reset the socket
+                        logger.warning("The Hub is not answering... Resetting the socket")
+                        socket.close(linger=0)
+                        socket = context.socket(zmq.DEALER)
+                        socket.setsockopt_string(zmq.IDENTITY, self.identity)
+                        socket.connect(f"tcp://{self.host}:{self.port}")
+                        missed_pong = 0
+
                     # We didn't receive anything for some time, send a ping
                     logger.debug("Didn't receive anything for some time, sending a ping")
                     socket.send(PING)
                     ping_ts = time.time()
                     missed_pong += 1
-
-                    if missed_pong > 3:
-                        # Reset the socket
-                        logger.warning("The Hub is not answering... Resetting the socket")
-                        socket.close()
-                        socket = context.socket(zmq.REQ)
-                        socket.setsockopt_string(zmq.IDENTITY, self.identity)
-                        socket.connect(f"tcp://{self.host}:{self.port}")
-                        socket.send(PING)
-                        logger.info("Worker ready to roll")
-                        ping_ts = time.time()
-                        pong_ts = 0
-                        missed_pong = 1
 
                 continue
 
