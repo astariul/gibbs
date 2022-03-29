@@ -18,6 +18,35 @@ class UserCodeException(Exception):
         super().__init__(f"Exception raised in user-defined code. Traceback :\n{t}")
 
 
+class WorkerManager:
+    def __init__(self, heartbeat_interval):
+        super().__init__()
+
+        self.heartbeat_t = heartbeat_interval
+
+        self.w_ts = {}
+        self.w_access = asyncio.Condition()
+
+    async def reckon(self, address):
+        async with self.w_access:
+            self.w_ts[address] = time.time()
+            self.w_access.notify()
+
+    async def get_next_worker(self):
+        async with self.w_access:
+            # Iterate workers until we find one that was alive recently
+            w_alive = False
+            while not w_alive:
+                # If no workers are available, wait...
+                if not self.w_ts:
+                    await self.w_access.wait()
+
+                address, ts = self.w_ts.popitem()
+                w_alive = time.time() - ts < self.heartbeat_t
+
+            return address
+
+
 class Hub:
     def __init__(
         self, port=DEFAULT_PORT, heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL, resp_buffer_size=RESPONSE_BUFFER_SIZE
@@ -28,8 +57,7 @@ class Hub:
         self.heartbeat_t = heartbeat_interval
         self.resp_buffer_size = resp_buffer_size
         self.socket = None
-        self.workers_c = None
-        self.ready_workers = {}
+        self.w_manager = None
         self.responses = {}
         self.req_states = {}
 
@@ -42,9 +70,7 @@ class Hub:
             logger.debug(f"Received something from worker #{address}")
 
             # Since we received a response from this worker, it means it's ready for more !
-            async with self.workers_c:
-                self.ready_workers[address] = time.time()
-                self.workers_c.notify()
+            await self.w_manager.reckon(address)
 
             if len(frames) == 1:
                 # Answer the Ping
@@ -81,7 +107,7 @@ class Hub:
             context = zmq.asyncio.Context()
             self.socket = context.socket(zmq.ROUTER)
             self.socket.bind(f"tcp://*:{self.port}")
-            self.workers_c = asyncio.Condition()
+            self.w_manager = WorkerManager(heartbeat_interval=self.heartbeat_t)
 
             # Fire and forget : infinite loop, taking care of receiving stuff from the socket
             logger.info("Starting receiving loop...")
@@ -94,7 +120,7 @@ class Hub:
         self.req_states[req_id] = asyncio.Event()
 
         # Send the request
-        address = await self._get_ready_worker()
+        address = await self.w_manager.get_next_worker()
         logger.debug(f"Sending request #{req_id} to worker #{address}")
         await self.socket.send_multipart([address, b"", msgpack.packb([req_id, args, kwargs])])
 
@@ -113,20 +139,6 @@ class Hub:
             raise UserCodeException(res)
         else:
             return res
-
-    async def _get_ready_worker(self):
-        async with self.workers_c:
-            # Iterate workers until we find one that was alive recently
-            w_alive = False
-            while not w_alive:
-                # If no workers are available, wait...
-                if not self.ready_workers:
-                    await self.workers_c.wait()
-
-                address, ts = self.ready_workers.popitem()
-                w_alive = time.time() - ts < self.heartbeat_t
-
-            return address
 
     def __del__(self):
         if self.socket is not None:
