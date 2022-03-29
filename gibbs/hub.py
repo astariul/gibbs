@@ -7,7 +7,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT
+from gibbs.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT, PONG
 
 
 RESPONSE_BUFFER_SIZE = 4096
@@ -49,7 +49,7 @@ class Hub:
             if len(frames) == 1:
                 # Answer the Ping
                 logger.debug("Answering the ping")
-                await self.socket.send_multipart([address, b"", b""])
+                await self.socket.send_multipart([address, b"", PONG])
                 continue
 
             _, resp = frames
