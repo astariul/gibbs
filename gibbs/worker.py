@@ -36,22 +36,34 @@ class Worker(Process):
         self.port = gibbs_port
         self.heartbeat_t = gibbs_heartbeat_interval
 
-    def run(self):
-        # Instanciate the worker
-        worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
+        self.waiting_pong = 0
 
-        # Create the context for the socket
-        context = zmq.Context()
+    def create_socket(self, context):
+        # Create the socket, set its identity
         socket = context.socket(zmq.DEALER)
         socket.setsockopt_string(zmq.IDENTITY, self.identity)
 
         # Connect to the Hub
         socket.connect(f"tcp://{self.host}:{self.port}")
 
-        # Tell the Hub we are ready
+        return socket
+
+    def ping(self, socket):
+        logger.debug("Sending ping...")
         socket.send(PING)
+        self.waiting_pong += 1
+
+    def run(self):
+        # Instanciate the worker
+        worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
+
+        # Create the socket
+        context = zmq.Context()
+        socket = self.create_socket(context)
         logger.info("Worker ready to roll")
-        missed_pong = 1
+
+        # Tell the Hub we are ready
+        self.ping(socket)
 
         # Indefinitely wait for requests : when we are done with one request,
         # we wait for the next one
@@ -59,23 +71,22 @@ class Worker(Process):
             logger.debug("Waiting for request...")
             if socket.poll(self.heartbeat_t * MS, zmq.POLLIN):
                 _, workload = socket.recv_multipart(zmq.NOBLOCK)
-                logger.debug(f"Received {workload}")
-                missed_pong = 0
+                logger.debug("Received something !")
+                self.waiting_pong = 0
             else:
-                if missed_pong > 1:
-                    # Reset the socket
-                    logger.warning("The Hub is not answering... Resetting the socket")
+                logger.debug(f"Didn't receive anything for {self.heartbeat_t}s ({self.waiting_pong})")
+
+                if self.waiting_pong > 1:
+                    logger.warning(
+                        f"The Hub is not answering, even after {self.waiting_pong} missed pings... "
+                        f"Resetting the socket"
+                    )
                     socket.close(linger=0)
-                    socket = context.socket(zmq.DEALER)
-                    socket.setsockopt_string(zmq.IDENTITY, self.identity)
-                    socket.connect(f"tcp://{self.host}:{self.port}")
-                    missed_pong = 0
+                    socket = self.create_socket(context)
+                    self.waiting_pong = 0
 
-                # We didn't receive anything for some time, send a ping
-                logger.debug("Didn't receive anything for some time, sending a ping")
-                socket.send(PING)
-                missed_pong += 1
-
+                # We didn't receive anything for some time, try to ping again
+                self.ping(socket)
                 continue
 
             if workload == PONG:
