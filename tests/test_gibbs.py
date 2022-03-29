@@ -244,7 +244,7 @@ async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
     w.start()
 
     # Since we have a worker, the request was processed
-    done, pending = await asyncio.wait([req], timeout=0.1)
+    done, pending = await asyncio.wait([req], timeout=0.15)
     assert req in done
 
     w.terminate()
