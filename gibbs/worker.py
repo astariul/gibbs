@@ -1,4 +1,3 @@
-import time
 import traceback
 import uuid
 from multiprocessing import Process
@@ -13,7 +12,7 @@ DEFAULT_HEARTBEAT_INTERVAL = 1
 MS = 1000
 CODE_SUCCESS = 0
 CODE_FAILURE = 1
-PING = b""
+PING = PONG = b""
 
 
 class Worker(Process):
@@ -52,40 +51,34 @@ class Worker(Process):
         # Tell the Hub we are ready
         socket.send(PING)
         logger.info("Worker ready to roll")
-        ping_ts = time.time()
-        pong_ts = 0
         missed_pong = 1
 
         # Indefinitely wait for requests : when we are done with one request,
         # we wait for the next one
         while True:
             logger.debug("Waiting for request...")
-            if socket.poll(self.heartbeat_t * MS // 4, zmq.POLLIN):
+            if socket.poll(self.heartbeat_t * MS, zmq.POLLIN):
                 _, workload = socket.recv_multipart(zmq.NOBLOCK)
                 logger.debug(f"Received {workload}")
-                pong_ts = time.time()
                 missed_pong = 0
             else:
-                ts = time.time()
-                if ts - pong_ts > self.heartbeat_t and ts - ping_ts > self.heartbeat_t:
-                    if missed_pong > 1:
-                        # Reset the socket
-                        logger.warning("The Hub is not answering... Resetting the socket")
-                        socket.close(linger=0)
-                        socket = context.socket(zmq.DEALER)
-                        socket.setsockopt_string(zmq.IDENTITY, self.identity)
-                        socket.connect(f"tcp://{self.host}:{self.port}")
-                        missed_pong = 0
+                if missed_pong > 1:
+                    # Reset the socket
+                    logger.warning("The Hub is not answering... Resetting the socket")
+                    socket.close(linger=0)
+                    socket = context.socket(zmq.DEALER)
+                    socket.setsockopt_string(zmq.IDENTITY, self.identity)
+                    socket.connect(f"tcp://{self.host}:{self.port}")
+                    missed_pong = 0
 
-                    # We didn't receive anything for some time, send a ping
-                    logger.debug("Didn't receive anything for some time, sending a ping")
-                    socket.send(PING)
-                    ping_ts = time.time()
-                    missed_pong += 1
+                # We didn't receive anything for some time, send a ping
+                logger.debug("Didn't receive anything for some time, sending a ping")
+                socket.send(PING)
+                missed_pong += 1
 
                 continue
 
-            if workload == b"":
+            if workload == PONG:
                 # Just a Pong, ignore it
                 logger.debug("It was just a pong...")
                 continue
