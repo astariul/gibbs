@@ -104,8 +104,8 @@ class TWorkerSlow:
         return x**2
 
 
-async def test_overload_response_buffer(unused_tcp_port):
-    # Starts 2 slow workers and 1 fast worker
+async def test_overload_response_buffer_fast(unused_tcp_port):
+    # Starts 3 workers
     workers = [Worker(TWorkerSlow, gibbs_port=unused_tcp_port) for _ in range(3)]
     for w in workers:
         w.start()
@@ -114,15 +114,44 @@ async def test_overload_response_buffer(unused_tcp_port):
     h = Hub(port=unused_tcp_port, resp_buffer_size=2)
 
     # Fire 3 requests
-    reqs = [asyncio.create_task(h.request(i)) for i in range(3)]
+    reqs = await asyncio.gather(*[asyncio.create_task(h.request(i)) for i in range(3)], return_exceptions=True)
 
-    # Since the third requests erases the first one in the Hub, we will wait
-    # indefinitely... Since each request takes 0.1s, set a big enough timeout
-    done, pending = await asyncio.wait(reqs, timeout=0.3)
+    # The third request erases the first on in the Hub, before we can even send
+    # it to the worker. So when we wait for the response, the request ID is unknown
+    assert isinstance(reqs[0], KeyError)
+    assert reqs[1] == 1
+    assert reqs[2] == 4
 
-    assert reqs[0] in pending
-    assert reqs[1] in done
-    assert reqs[2] in done
+    for w in workers:
+        w.terminate()
+
+
+async def test_overload_response_buffer_slow(unused_tcp_port):
+    # Starts 3 workers
+    workers = [Worker(TWorkerSlow, gibbs_port=unused_tcp_port) for _ in range(3)]
+    for w in workers:
+        w.start()
+
+    # Set the buffer size to 2 so the third request will erase the first one
+    h = Hub(port=unused_tcp_port, resp_buffer_size=2)
+
+    # Send a request to make sure the worker is fine
+    res = await h.request(3)
+    assert res == 9
+
+    # Fire 1 request, then 2 requests
+    t = [asyncio.create_task(h.request(0))]
+    await asyncio.sleep(0.01)
+    t.append(asyncio.create_task(h.request(1)))
+    t.append(asyncio.create_task(h.request(2)))
+
+    # After sending the first request, the task is waiting for the result
+    # But meanwhile, the response buffer was erased because of other incoming requests
+    # So the first task is indefinitely waiting...
+    done, pending = await asyncio.wait(t, timeout=0.3)
+    assert t[0] in pending
+    assert t[1] in done
+    assert t[2] in done
 
     for w in workers:
         w.terminate()
