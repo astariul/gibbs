@@ -9,6 +9,7 @@ from loguru import logger
 
 DEFAULT_PORT = 5019
 DEFAULT_HEARTBEAT_INTERVAL = 1
+DEFAULT_RESET_AFTER_N_MISS = 2
 MS = 1000
 CODE_SUCCESS = 0
 CODE_FAILURE = 1
@@ -23,6 +24,7 @@ class Worker(Process):
         gibbs_host="localhost",
         gibbs_port=DEFAULT_PORT,
         gibbs_heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL,
+        gibbs_reset_after_n_miss=DEFAULT_RESET_AFTER_N_MISS,
         **kwargs,
     ):
         super().__init__()
@@ -35,6 +37,7 @@ class Worker(Process):
         self.host = gibbs_host
         self.port = gibbs_port
         self.heartbeat_t = gibbs_heartbeat_interval
+        self.reset_n_miss = gibbs_reset_after_n_miss
 
         self.waiting_pong = 0
 
@@ -76,7 +79,7 @@ class Worker(Process):
             else:
                 logger.debug(f"Didn't receive anything for {self.heartbeat_t}s ({self.waiting_pong})")
 
-                if self.waiting_pong > 1:
+                if self.waiting_pong >= self.reset_n_miss:
                     logger.warning(
                         f"The Hub is not answering, even after {self.waiting_pong} missed pings... "
                         f"Resetting the socket"
