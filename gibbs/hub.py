@@ -1,6 +1,7 @@
 import asyncio
 import time
 import uuid
+from collections import namedtuple
 
 import msgpack
 import zmq
@@ -47,6 +48,9 @@ class WorkerManager:
             return address
 
 
+Response = namedtuple("Response", ["code", "content"])
+
+
 class RequestManager:
     def __init__(self, resp_buffer_size):
         super().__init__()
@@ -75,17 +79,17 @@ class RequestManager:
         await self.req_states[req_id].wait()
 
         # Once we get it, access the result
-        code, res = self.responses.pop(req_id)
+        r = self.responses.pop(req_id)
 
         # Don't forget to remove the event
         self.req_states.pop(req_id)
 
-        return code, res
+        return r.code, r.content
 
     def store(self, req_id, code, response):
         # Store the response if the req_id is recognized
         if req_id in self.req_states:
-            self.responses[req_id] = (code, response)
+            self.responses[req_id] = Response(code, response)
 
             # Notify that we received the response
             self.req_states[req_id].set()
