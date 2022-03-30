@@ -280,7 +280,7 @@ async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
 
 
 async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
-    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1)
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1, gibbs_reset_after_n_miss=1)
     w.start()
 
     h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
@@ -293,7 +293,7 @@ async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
     h.__del__()
 
     # Wait a bit : without heartbeat response, the worker will know the hub is dead
-    await asyncio.sleep(0.4)
+    await asyncio.sleep(0.2)
 
     # Recreate a brand new hub, the worker will automatically try to reconnect
     h2 = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
