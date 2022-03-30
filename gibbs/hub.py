@@ -131,8 +131,7 @@ class Hub:
 
             self.req_manager.store(req_id, code, res)
 
-    async def request(self, *args, **kwargs):
-        # Before anything, if the receiving loop was not started, start it
+    def _start_if_not_started(self):
         if self.socket is None:
             # Create what we need here in this process/context
             context = zmq.asyncio.Context()
@@ -143,6 +142,10 @@ class Hub:
             # Fire and forget : infinite loop, taking care of receiving stuff from the socket
             logger.info("Starting receiving loop...")
             asyncio.create_task(self.receive_loop())
+
+    async def request(self, *args, **kwargs):
+        # Before anything, if the receiving loop was not started, start it
+        self._start_if_not_started()
 
         # Assign a unique ID to the request
         req_id = uuid.uuid4().hex
