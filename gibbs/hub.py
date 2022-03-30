@@ -47,6 +47,55 @@ class WorkerManager:
             return address
 
 
+class RequestManager:
+    def __init__(self, resp_buffer_size):
+        super().__init__()
+
+        self.resp_buffer_size = resp_buffer_size
+
+        self.responses = {}
+        self.req_states = {}
+
+    def pin(self, req_id):
+        self.req_states[req_id] = asyncio.Event()
+
+        # Ensure we don't store too many requests
+        if len(self.req_states) > self.resp_buffer_size:
+            # If it's the case, forget the oldest one
+            k = list(self.req_states.keys())[0]
+            logger.warning(f"Response buffer overflow (>{self.resp_buffer_size}). Forgetting oldest request : {k}")
+            self.req_states.pop(k)
+            self.responses.pop(k, None)
+
+    async def wait_for(self, req_id):
+        if req_id not in self.req_states:
+            raise KeyError(f"Request #{req_id} was not pinned, or was removed because of buffer overflow")
+
+        # Wait for the receiving loop to receive the response
+        await self.req_states[req_id].wait()
+
+        # Once we get it, access the result
+        code, res = self.responses.pop(req_id)
+
+        # Don't forget to remove the event
+        self.req_states.pop(req_id)
+
+        return code, res
+
+    def store(self, req_id, code, response):
+        # Store the response if the req_id is recognized
+        if req_id in self.req_states:
+            self.responses[req_id] = (code, response)
+
+            # Notify that we received the response
+            self.req_states[req_id].set()
+        else:
+            logger.warning(
+                f"Request #{req_id} was previously removed from response buffer. "
+                f"Ignoring the response from this request..."
+            )
+
+
 class Hub:
     def __init__(
         self, port=DEFAULT_PORT, heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL, resp_buffer_size=RESPONSE_BUFFER_SIZE
@@ -55,11 +104,9 @@ class Hub:
 
         self.port = port
         self.heartbeat_t = heartbeat_interval
-        self.resp_buffer_size = resp_buffer_size
         self.socket = None
         self.w_manager = None
-        self.responses = {}
-        self.req_states = {}
+        self.req_manager = RequestManager(resp_buffer_size=resp_buffer_size)
 
     async def receive_loop(self):
         """Infinite loop for receiving responses from the workers."""
@@ -82,23 +129,7 @@ class Hub:
             req_id, code, res = msgpack.unpackb(resp)
             logger.debug(f"Received response from request #{req_id}")
 
-            # Ensure we don't store too many requests
-            if len(self.req_states) > self.resp_buffer_size:
-                # If it's the case, forget the oldest one
-                k = list(self.req_states.keys())[0]
-                logger.warning(f"Response buffer overflow (>{self.resp_buffer_size}). Forgetting oldest request : {k}")
-                self.req_states.pop(k)
-                self.responses.pop(k, None)
-
-            # Store the response and set the Event
-            if req_id in self.req_states:
-                self.responses[req_id] = (code, res)
-                self.req_states[req_id].set()
-            else:
-                logger.warning(
-                    f"Request #{req_id} was previously removed from response buffer. "
-                    f"Ignoring the response from this request..."
-                )
+            self.req_manager.store(req_id, code, res)
 
     async def request(self, *args, **kwargs):
         # Before anything, if the receiving loop was not started, start it
@@ -113,26 +144,21 @@ class Hub:
             logger.info("Starting receiving loop...")
             asyncio.create_task(self.receive_loop())
 
-        # Assign a unique ID to the request, so we know which one to wait for
+        # Assign a unique ID to the request
         req_id = uuid.uuid4().hex
 
-        # Create an event for this request, so we know when we receive an answer
-        self.req_states[req_id] = asyncio.Event()
+        # Let the manager know that we are waiting for this request
+        logger.debug(f"Pinning request #{req_id}")
+        self.req_manager.pin(req_id)
 
         # Send the request
         address = await self.w_manager.get_next_worker()
         logger.debug(f"Sending request #{req_id} to worker #{address}")
         await self.socket.send_multipart([address, b"", msgpack.packb([req_id, args, kwargs])])
 
-        # Wait for the receiving loop to receive the response
-        await self.req_states[req_id].wait()
-        logger.debug(f"Accessing result for request #{req_id}")
-
-        # Once we get it, access the result
-        code, res = self.responses.pop(req_id)
-
-        # Don't forget to remove the event
-        self.req_states.pop(req_id)
+        # Wait until we receive the response
+        code, res = await self.req_manager.wait_for(req_id)
+        logger.debug(f"Received result for request #{req_id}")
 
         # Depending on what is the response, deal with it properly
         if code == CODE_FAILURE:
