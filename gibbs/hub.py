@@ -177,10 +177,14 @@ class Hub:
         try:
             return await asyncio.wait_for(self._request(*args, **kwargs), timeout=gibbs_timeout)
         except asyncio.TimeoutError:
-            if gibbs_retries <= 0:
+            if gibbs_retries == 0:
+                logger.error(f"Request failed : no response received within {gibbs_timeout}s")
                 raise
             else:
-                retries_left = gibbs_retries - 1
+                retries_left = max(gibbs_retries - 1, -1)
+                logger.warning(
+                    f"Request failed : no response received within {gibbs_timeout}s. Retrying {retries_left} times"
+                )
                 return await self.request(*args, gibbs_timeout=gibbs_timeout, gibbs_retries=retries_left, **kwargs)
 
     def __del__(self):
