@@ -303,3 +303,58 @@ async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
     assert res == 25
 
     w.terminate()
+
+
+async def test_request_timeout(unused_tcp_port):
+    # Start a Hub without workers, so the request will timeout
+    h = Hub(port=unused_tcp_port)
+
+    # Sending a request with a timeout will lead to TimeoutError
+    with pytest.raises(asyncio.TimeoutError):
+        await h.request(2, gibbs_timeout=0.1)
+
+
+async def test_worker_crash_but_request_is_automatically_retried(unused_tcp_port):
+    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port) for i in range(2)]
+    for w in workers:
+        w.start()
+
+    h = Hub(port=unused_tcp_port)
+
+    # Send requests to make sure both workers are working fine
+    res = await asyncio.gather(h.request(1), h.request(1))
+    assert 1 in res and 2 in res
+
+    # Simulate a crash in one of the worker
+    workers[0].terminate()
+
+    # Send another request directly after the crash
+    # The Hub received a heartbeat recently so he thinks the worker is alive
+    # But we set retries to 1, so the Hub will retry until a worker alive process it
+    res = await asyncio.gather(*[h.request(1, gibbs_timeout=0.2, gibbs_retries=1) for _ in range(2)])
+
+    # Both requests are processed by the left alive worker
+    assert res == [2, 2]
+
+    workers[1].terminate()
+
+
+async def test_request_infinite_retry(unused_tcp_port):
+    # Start a Hub without workers, so the request will timeout
+    h = Hub(port=unused_tcp_port)
+
+    # Fire a request with a short timeout
+    # No one will answer but we keep retrying indefinitely
+    req = asyncio.create_task(h.request(3, gibbs_timeout=0.05, gibbs_retries=-1))
+    done, pending = await asyncio.wait([req], timeout=0.1)
+    assert req in pending
+
+    # Start a worker
+    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port)
+    w.start()
+
+    # Since we have a worker, the request was processed
+    done, pending = await asyncio.wait([req], timeout=0.2)
+    assert req in done
+
+    w.terminate()
