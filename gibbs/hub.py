@@ -147,7 +147,7 @@ class Hub:
             logger.info("Starting receiving loop...")
             asyncio.create_task(self.receive_loop())
 
-    async def request(self, *args, **kwargs):
+    async def _request(self, *args, **kwargs):
         # Before anything, if the receiving loop was not started, start it
         self._start_if_not_started()
 
@@ -172,6 +172,16 @@ class Hub:
             raise UserCodeException(res)
         else:
             return res
+
+    async def request(self, *args, gibbs_timeout=None, gibbs_retries=0, **kwargs):
+        try:
+            return await asyncio.wait_for(self._request(*args, **kwargs), timeout=gibbs_timeout)
+        except asyncio.TimeoutError:
+            if gibbs_retries <= 0:
+                raise
+            else:
+                retries_left = gibbs_retries - 1
+                return await self.request(*args, gibbs_timeout=gibbs_timeout, gibbs_retries=retries_left, **kwargs)
 
     def __del__(self):
         if self.socket is not None:
