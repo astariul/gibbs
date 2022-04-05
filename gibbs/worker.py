@@ -9,7 +9,7 @@ from loguru import logger
 
 
 DEFAULT_PORT: int = 5019
-DEFAULT_HEARTBEAT_INTERVAL: int = 1
+DEFAULT_HEARTBEAT_INTERVAL: float = 1
 DEFAULT_RESET_AFTER_N_MISS: int = 2
 MS: int = 1000
 CODE_SUCCESS: int = 0
@@ -19,13 +19,35 @@ PONG: bytes = b""
 
 
 class Worker(Process):
+    """Define a worker process. This worker process indefinitely waits for
+    requests on a socket. Upon receiving a request, it processes it with the
+    worker class provided, and return the response.
+
+    After creating the Worker object, you have 2 different ways to run it :
+     * `worker.run()` : It will run in the current process directly (blocking,
+        infinite loop).
+     * `worker.start()` : It will start a different process and start the code
+        there (non-blocking).
+
+    Args:
+        worker_cls (Callable): Worker class containing the code that will be used
+            to process requests.
+        gibbs_host (str): Host of the Hub. Defaults to "localhost".
+        gibbs_port (int): Port of the Hub. Defaults to DEFAULT_PORT.
+        gibbs_heartbeat_interval (float): Heartbeat interval between the
+            worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.
+        gibbs_reset_after_n_miss (int): Number of missed heartbeats
+            allowed before hard-resetting the socket and retrying. Defaults to
+            DEFAULT_RESET_AFTER_N_MISS.
+    """
+
     def __init__(
         self,
         worker_cls: Callable,
         *args: Any,
         gibbs_host: str = "localhost",
         gibbs_port: int = DEFAULT_PORT,
-        gibbs_heartbeat_interval: int = DEFAULT_HEARTBEAT_INTERVAL,
+        gibbs_heartbeat_interval: float = DEFAULT_HEARTBEAT_INTERVAL,
         gibbs_reset_after_n_miss: int = DEFAULT_RESET_AFTER_N_MISS,
         **kwargs: Any,
     ):
@@ -44,6 +66,15 @@ class Worker(Process):
         self.waiting_pong = 0
 
     def create_socket(self, context: zmq.Context) -> zmq.Socket:
+        """Helper method to create a socket, setting its identity and connecting
+        to the Hub.
+
+        Args:
+            context (zmq.Context): ZMQ context to use.
+
+        Returns:
+            zmq.Socket: Initialized and connected socket, ready to use.
+        """
         # Create the socket, set its identity
         socket = context.socket(zmq.DEALER)
         socket.setsockopt_string(zmq.IDENTITY, self.identity)
@@ -54,11 +85,21 @@ class Worker(Process):
         return socket
 
     def ping(self, socket: zmq.Socket):
+        """Helper method used for the heartbeat. Also takes care of keeping the
+        counter of heartbeats up-to-date.
+
+        Args:
+            socket (zmq.Socket): Socket to use to send the heartbeat.
+        """
         logger.debug("Sending ping...")
         socket.send(PING)
         self.waiting_pong += 1
 
     def run(self):
+        """Main method. It will initialize the worker class, and enter an
+        infinite loop, waiting for requests. Whenever a request is received, it
+        processes it with the code provided in the constructor.
+        """
         # Instanciate the worker
         worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
 

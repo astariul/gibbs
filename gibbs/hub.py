@@ -16,12 +16,30 @@ RESPONSE_BUFFER_SIZE: int = 4096
 
 
 class UserCodeException(Exception):
+    """Custom Exception for user-defined catched errors.
+
+    Args:
+        t (str): Traceback returned by the worker.
+    """
+
     def __init__(self, t: str):
         super().__init__(f"Exception raised in user-defined code. Traceback :\n{t}")
 
 
 class WorkerManager:
-    def __init__(self, heartbeat_interval: int):
+    """A helper class that takes care of managing workers.
+    Workers' address can be registered as available, and this class will make
+    sure to return address of workers that are available and alive.
+
+    A worker is considered as dead if we didn't receive any heartbeat within a
+    given interval.
+
+    Args:
+        heartbeat_interval (float): Interval of time (in seconds) after which we
+            consider a worker to be dead.
+    """
+
+    def __init__(self, heartbeat_interval: float):
         super().__init__()
 
         self.heartbeat_t = heartbeat_interval
@@ -30,11 +48,21 @@ class WorkerManager:
         self.w_access = asyncio.Condition()
 
     async def reckon(self, address: str):
+        """Register the given address as available.
+
+        Args:
+            address (str): Address of the worker to register as available.
+        """
         async with self.w_access:
             self.w_ts[address] = time.time()
             self.w_access.notify()
 
     async def get_next_worker(self) -> str:
+        """Retrieve the next available and alive worker's address.
+
+        Returns:
+            str: Address of the available and alive worker.
+        """
         async with self.w_access:
             # Iterate workers until we find one that was alive recently
             w_alive = False
@@ -53,6 +81,13 @@ Response = namedtuple("Response", ["code", "content"])
 
 
 class RequestManager:
+    """A helper class that takes care of storing responses and waiting for the
+    right response.
+
+    Args:
+        resp_buffer_size (int): Maximum size of the response buffer.
+    """
+
     def __init__(self, resp_buffer_size: int):
         super().__init__()
 
@@ -62,6 +97,13 @@ class RequestManager:
         self.req_states = {}
 
     def pin(self, req_id: str):
+        """Pin a request ID. This is a necessary step when sending a request,
+        so that the request can be awaited until a response is received.
+        This method should be called for each `req_id` before calling `wait_for`.
+
+        Args:
+            req_id (str): Request unique identifier.
+        """
         self.req_states[req_id] = asyncio.Event()
 
         # Ensure we don't store too many requests
@@ -73,6 +115,20 @@ class RequestManager:
             self.responses.pop(k, None)
 
     async def wait_for(self, req_id: str) -> Tuple[int, Any]:
+        """Async method that waits until we received the response corresponding
+        to the given request ID.
+
+        The method `pin` should be called before waiting with this method.
+
+        Args:
+            req_id (str): Request unique identifier.
+
+        Raises:
+            KeyError: Exception raised if the request wasn't registered previously.
+
+        Returns:
+            Tuple[int, Any]: Code and content of the received response.
+        """
         if req_id not in self.req_states:
             raise KeyError(f"Request #{req_id} was not pinned, or was removed because of buffer overflow")
 
@@ -88,6 +144,13 @@ class RequestManager:
         return r.code, r.content
 
     def store(self, req_id: str, code: int, response: Any):
+        """Store a response, to be consumed later.
+
+        Args:
+            req_id (str): Request unique identifier.
+            code (int): Code of the response.
+            response (Any): Content of the response.
+        """
         # Store the response if the req_id is recognized
         if req_id in self.req_states:
             self.responses[req_id] = Response(code, response)
@@ -102,10 +165,23 @@ class RequestManager:
 
 
 class Hub:
+    """Class acting as a hub for all the requests to send. All requests sent
+    through this class will be automatically dispatched to connected workers,
+    will wait for the responses and return it.
+
+    Args:
+        port (int): Port number to use for the sockets. Defaults to
+            DEFAULT_PORT.
+        heartbeat_interval (float): Heartbeat interval used by the
+            workers, in seconds. Defaults to DEFAULT_HEARTBEAT_INTERVAL.
+        resp_buffer_size (int): Maximum response buffer size. Defaults
+            to RESPONSE_BUFFER_SIZE.
+    """
+
     def __init__(
         self,
         port: int = DEFAULT_PORT,
-        heartbeat_interval: int = DEFAULT_HEARTBEAT_INTERVAL,
+        heartbeat_interval: float = DEFAULT_HEARTBEAT_INTERVAL,
         resp_buffer_size: int = RESPONSE_BUFFER_SIZE,
     ):
         super().__init__()
@@ -140,6 +216,9 @@ class Hub:
             self.req_manager.store(req_id, code, res)
 
     def _start_if_not_started(self):
+        """Helper method to ensure everything is properly started (socket is
+        initialized, receiving loop is started, etc...).
+        """
         if self.socket is None:
             # Create what we need here in this process/context
             context = zmq.asyncio.Context()
@@ -152,6 +231,24 @@ class Hub:
             asyncio.create_task(self.receive_loop())
 
     async def _request(self, *args: Any, **kwargs: Any) -> Any:
+        """Raw method to send a request. This method will do the following :
+         * Start the receiving loop if it was not started
+         * Get the address of the next worker ready (blocking)
+         * Send the request to the worker
+         * Wait for the response (blocking)
+         * Return the result
+
+        Args:
+            *args: Positional arguments for the request.
+            **kwargs: Keywords arguments for the request.
+
+        Raises:
+            UserCodeException: Exception raised if an exception was raised inside
+                user-defined code on the worker side.
+
+        Returns:
+            Any: The response for the request.
+        """
         # Before anything, if the receiving loop was not started, start it
         self._start_if_not_started()
 
@@ -178,6 +275,30 @@ class Hub:
             return res
 
     async def request(self, *args: Any, gibbs_timeout: float = None, gibbs_retries: int = 0, **kwargs: Any) -> Any:
+        """Main method, used to send a request to workers and get the result.
+
+        This method is a wrapper around `_request`, providing additional
+        functionalities :
+         * Timeout
+         * Automatic retries
+
+        Args:
+            *args: Positional arguments for the request.
+            gibbs_timeout (float): Timeout for the request, in seconds.
+                If `None` is given, block until the request is complete.
+                Defaults to None.
+            gibbs_retries (int): Number of retries. This argument is
+                used only if `gibbs_timeout` is not `None`. If `-1` is given,
+                indefinitely retry. Defaults to 0.
+            **kwargs: Keywords arguments for the request.
+
+        Raises:
+            asyncio.TimeoutError: Error raised if no response is received within
+                the given timeout.
+
+        Returns:
+            Any: The response for the request.
+        """
         try:
             return await asyncio.wait_for(self._request(*args, **kwargs), timeout=gibbs_timeout)
         except asyncio.TimeoutError:
