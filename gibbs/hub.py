@@ -2,6 +2,7 @@ import asyncio
 import time
 import uuid
 from collections import namedtuple
+from typing import Any, Tuple
 
 import msgpack
 import zmq
@@ -11,16 +12,16 @@ from loguru import logger
 from gibbs.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT, PONG
 
 
-RESPONSE_BUFFER_SIZE = 4096
+RESPONSE_BUFFER_SIZE: int = 4096
 
 
 class UserCodeException(Exception):
-    def __init__(self, t):
+    def __init__(self, t: str):
         super().__init__(f"Exception raised in user-defined code. Traceback :\n{t}")
 
 
 class WorkerManager:
-    def __init__(self, heartbeat_interval):
+    def __init__(self, heartbeat_interval: int):
         super().__init__()
 
         self.heartbeat_t = heartbeat_interval
@@ -28,12 +29,12 @@ class WorkerManager:
         self.w_ts = {}
         self.w_access = asyncio.Condition()
 
-    async def reckon(self, address):
+    async def reckon(self, address: str):
         async with self.w_access:
             self.w_ts[address] = time.time()
             self.w_access.notify()
 
-    async def get_next_worker(self):
+    async def get_next_worker(self) -> str:
         async with self.w_access:
             # Iterate workers until we find one that was alive recently
             w_alive = False
@@ -52,7 +53,7 @@ Response = namedtuple("Response", ["code", "content"])
 
 
 class RequestManager:
-    def __init__(self, resp_buffer_size):
+    def __init__(self, resp_buffer_size: int):
         super().__init__()
 
         self.resp_buffer_size = resp_buffer_size
@@ -60,7 +61,7 @@ class RequestManager:
         self.responses = {}
         self.req_states = {}
 
-    def pin(self, req_id):
+    def pin(self, req_id: str):
         self.req_states[req_id] = asyncio.Event()
 
         # Ensure we don't store too many requests
@@ -71,7 +72,7 @@ class RequestManager:
             self.req_states.pop(k)
             self.responses.pop(k, None)
 
-    async def wait_for(self, req_id):
+    async def wait_for(self, req_id: str) -> Tuple[int, Any]:
         if req_id not in self.req_states:
             raise KeyError(f"Request #{req_id} was not pinned, or was removed because of buffer overflow")
 
@@ -86,7 +87,7 @@ class RequestManager:
 
         return r.code, r.content
 
-    def store(self, req_id, code, response):
+    def store(self, req_id: str, code: int, response: Any):
         # Store the response if the req_id is recognized
         if req_id in self.req_states:
             self.responses[req_id] = Response(code, response)
@@ -102,7 +103,10 @@ class RequestManager:
 
 class Hub:
     def __init__(
-        self, port=DEFAULT_PORT, heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL, resp_buffer_size=RESPONSE_BUFFER_SIZE
+        self,
+        port: int = DEFAULT_PORT,
+        heartbeat_interval: int = DEFAULT_HEARTBEAT_INTERVAL,
+        resp_buffer_size: int = RESPONSE_BUFFER_SIZE,
     ):
         super().__init__()
 
@@ -147,7 +151,7 @@ class Hub:
             logger.info("Starting receiving loop...")
             asyncio.create_task(self.receive_loop())
 
-    async def _request(self, *args, **kwargs):
+    async def _request(self, *args: Any, **kwargs: Any) -> Any:
         # Before anything, if the receiving loop was not started, start it
         self._start_if_not_started()
 
@@ -173,7 +177,7 @@ class Hub:
         else:
             return res
 
-    async def request(self, *args, gibbs_timeout=None, gibbs_retries=0, **kwargs):
+    async def request(self, *args: Any, gibbs_timeout: float = None, gibbs_retries: int = 0, **kwargs: Any) -> Any:
         try:
             return await asyncio.wait_for(self._request(*args, **kwargs), timeout=gibbs_timeout)
         except asyncio.TimeoutError:

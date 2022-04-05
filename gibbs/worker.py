@@ -1,31 +1,33 @@
 import traceback
 import uuid
 from multiprocessing import Process
+from typing import Any, Callable
 
 import msgpack
 import zmq
 from loguru import logger
 
 
-DEFAULT_PORT = 5019
-DEFAULT_HEARTBEAT_INTERVAL = 1
-DEFAULT_RESET_AFTER_N_MISS = 2
-MS = 1000
-CODE_SUCCESS = 0
-CODE_FAILURE = 1
-PING = PONG = b""
+DEFAULT_PORT: int = 5019
+DEFAULT_HEARTBEAT_INTERVAL: int = 1
+DEFAULT_RESET_AFTER_N_MISS: int = 2
+MS: int = 1000
+CODE_SUCCESS: int = 0
+CODE_FAILURE: int = 1
+PING: bytes = b""
+PONG: bytes = b""
 
 
 class Worker(Process):
     def __init__(
         self,
-        worker_cls,
-        *args,
-        gibbs_host="localhost",
-        gibbs_port=DEFAULT_PORT,
-        gibbs_heartbeat_interval=DEFAULT_HEARTBEAT_INTERVAL,
-        gibbs_reset_after_n_miss=DEFAULT_RESET_AFTER_N_MISS,
-        **kwargs,
+        worker_cls: Callable,
+        *args: Any,
+        gibbs_host: str = "localhost",
+        gibbs_port: int = DEFAULT_PORT,
+        gibbs_heartbeat_interval: int = DEFAULT_HEARTBEAT_INTERVAL,
+        gibbs_reset_after_n_miss: int = DEFAULT_RESET_AFTER_N_MISS,
+        **kwargs: Any,
     ):
         super().__init__()
 
@@ -41,7 +43,7 @@ class Worker(Process):
 
         self.waiting_pong = 0
 
-    def create_socket(self, context):
+    def create_socket(self, context: zmq.Context) -> zmq.Socket:
         # Create the socket, set its identity
         socket = context.socket(zmq.DEALER)
         socket.setsockopt_string(zmq.IDENTITY, self.identity)
@@ -51,7 +53,7 @@ class Worker(Process):
 
         return socket
 
-    def ping(self, socket):
+    def ping(self, socket: zmq.Socket):
         logger.debug("Sending ping...")
         socket.send(PING)
         self.waiting_pong += 1
