@@ -1,52 +1,44 @@
-# Pytere
+# Gibbs
 
 ## Introduction
 
-Welcome to the documentation of the `pytere` package.
+Welcome to the documentation of the `gibbs` package.
 
-`pytere` (**Py**thon **te**mplate **re**pository) is simply a template repository for python packages.
+`gibbs` is a package that help you scale your ML workers (and pure python code) across machines.
 
-This full-fledged template provides you with everything you need (_documentation, unit-tests, code linting & formatting, pre-commit hooks, etc..._) so you can just focus on writing the code.
+---
 
-If you want to use this template, follow the instructions at the [Usage](usage.md) page.
+Features :
+
+* ⚡️ Highly performant
+* 🔀 Asynchronous
+* 🐥 Easy-to-use
 
 ## Installation
 
 ### Latest version
 
-You can install the latest version of the package directly from PyPi with :
+You can install the latest stable version of the package directly from PyPi with :
 
 ```bash
-pip install pytere
+pip install gibbs
 ```
 
-!!! hint
-    If you want to install directly from Github, run :
-    ```bash
-    pip install git+https://github.com/astariul/pytere.git
-    ```
+### Bleeding-edge version
 
-### Specific version
-
-You can install a specific version of the package (`0.1.0` in ths example) from PyPi with :
+To install the bleeding-edge version (`main`, not released), you can do :
 
 ```bash
-pip install pytere==0.1.0
+pip install git+https://github.com/astariul/gibbs.git
 ```
 
-!!! hint
-    If you want to install directly from Github, run :
-    ```bash
-    pip install git+https://github.com/astariul/pytere.git@v0.1.0
-    ```
+### Local version
 
-### Local
-
-You can also clone the repository locally and install it manually :
+For development purposes, you can clone the repository locally and install it manually :
 
 ```bash
-git clone https://github.com/astariul/pytere.git
-cd pytere
+git clone https://github.com/astariul/gibbs.git
+cd gibbs
 pip install -e .
 ```
 
@@ -55,16 +47,10 @@ pip install -e .
 You can also install extras dependencies, for example :
 
 ```bash
-pip install -e .[docs]
+pip install gibbs[docs]
 ```
 
 Will install necessary dependencies for building the docs.
-
-!!! hint
-    If you installed the package directly from github, run :
-    ```bash
-    pip install "pytere[docs] @ git+https://github.com/astariul/pytere.git"
-    ```
 
 ---
 
@@ -74,18 +60,19 @@ List of extra dependencies :
 * **`hook`** : Dependencies for running pre-commit hooks.
 * **`lint`** : Dependencies for running linters and formatters.
 * **`docs`** : Dependencies for building the documentation.
+* **`ex`** : Dependencies for running the examples.
 * **`dev`** : `test` + `hook` + `lint` + `docs`.
 * **`all`** : All extra dependencies.
 
 ## Contribute
 
-To contribute, install the package locally (see [Installation](#local)), create your own branch, add your code/tests/documentation, and open a PR !
+To contribute, install the package locally (see [Installation](#local-version)), create your own branch, add your code/tests/documentation, and open a PR !
 
 ### Pre-commit hooks
 
 Pre-commit hooks are set to check the code added whenever you commit something.
 
-When you try to commit your code, hooks are run, and if anything fails (_linters, tests, etc..._), your code will not be committed. You then have to fix your code and try to commit again !
+When you try to commit your code, hooks are run, and if anything fails (_linters, etc..._), your code will not be committed. You then have to fix your code and try to commit again !
 
 !!! info
     If you never ran the hooks before, install it with :

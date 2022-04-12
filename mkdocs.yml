@@ -5,8 +5,8 @@ repo_name: "astariul/gibbs"
 theme:
   name: material
   custom_dir: docs/mkdocs
-  logo: "assets/flame.svg"
-  favicon: "assets/flame.svg"
+  logo: "assets/skull.svg"
+  favicon: "assets/skull.svg"
   features:
     - navigation.sections
   palette:
@@ -35,10 +35,10 @@ markdown_extensions:
 
 nav:
   - Welcome: "index.md"
-  - "features.md"
   - "usage.md"
-  - Code reference:
-    - "code_ref.md"
+  - "examples.md"
+  - "design.md"
+  - "code_ref.md"
 
 plugins:
   - search
