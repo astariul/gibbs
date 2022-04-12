@@ -303,6 +303,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-scaling-issue" class="md-nav__link">
+    The scaling issue
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-gibbs-works" class="md-nav__link">
     How gibbs works
   </a>
@@ -347,8 +354,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../design/" class="md-nav__link">
-        Design
+      <a href="../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/" class="md-nav__link">
+        Advanced
       </a>
     </li>
   
@@ -403,6 +425,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-scaling-issue" class="md-nav__link">
+    The scaling issue
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-gibbs-works" class="md-nav__link">
     How gibbs works
   </a>
@@ -441,8 +470,153 @@
 <p>Here we use FastAPI to show how easy it is to integrate <code>gibbs</code> in an asynchronous framework, but <code>gibbs</code> can be used like any asynchronous python code !</p>
 </div>
 <h2 id="initial-application">Initial application</h2>
+<p>Let's take a simple example to see how we can scale with <code>gibbs</code>.</p>
+<hr />
+<p>Say we have developed a great ML model. For the simplicity of this example, here is the code of a dummy model :</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">class</span> <span class="nc">MyAwesomeModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">wait_time</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+</code></pre></div>
+<p>This model simply return the squared input, after similating a certain processing time.</p>
+<hr />
+<p>Now, having a model is great, but we want to make it available to our users. To do that, we create an API using FastAPI, serving that model. Here is the code :</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">uvicorn</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+
+
+<span class="k">class</span> <span class="nc">MyAwesomeModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">wait_time</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+
+
+<span class="c1"># Instanciate FastAPI app and instanciate our model</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyAwesomeModel</span><span class="p">()</span>
+
+
+<span class="c1"># Define a route that will call our model and return the result</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/request&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">simple_request</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Run the app</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+</code></pre></div>
+<p>You can run this python script and access <a href="http://localhost:8000/docs">http://localhost:8000/docs</a> to try the route by yourself.</p>
+<p>Great ! We are serving our awesome model !</p>
+<h2 id="the-scaling-issue">The scaling issue</h2>
+<p>This code is great, but it does not scale.</p>
+<p>Because our model takes 250ms to deal with every request, you can imagine what happen when 10 clients send one request at the same time... One of the client will have to wait 2.5s before receiving a response !</p>
+<p>You can try this out by starting our simple app, and in another terminal, run the following script :</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+
+<span class="k">def</span> <span class="nf">req_process</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;http://localhost:8000/request?x=</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">time_parallel_requests</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">req_process</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">time_parallel_requests</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;It tooks </span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s to process 10 requests&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>This script simply run 10 requests in parallel and print the time necessary to complete all of them. And as expected :</p>
+<blockquote>
+<p>It tooks 2.532s to process 10 requests</p>
+</blockquote>
 <h2 id="how-gibbs-works">How <code>gibbs</code> works</h2>
+<p>What we want is simply to have pool of several models, and when one model is busy dealing with a request, instead of waiting for it to finish, we want to call another (idle) model.</p>
+<p>So we can deal with several requests in parallel, and therefore serve several clients with a low latency !</p>
+<hr />
+<p>To achieve this, <code>gibbs</code> introduces 2 classes :</p>
+<ul>
+<li><code>Hub</code></li>
+<li><code>Worker</code></li>
+</ul>
+<p>The <code>Worker</code> class is just a process, dealing with requests sequentially by calling the awesome model you created.</p>
+<p>The <code>Hub</code> is the class that orchestrate the requests, sending each request to the right worker (currently idle).</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>You can see a more detailed description of how this work in <a href="../architecture/">Architecture</a></p>
+</div>
 <h2 id="use-gibbs-to-scale-up">Use <code>gibbs</code> to scale up</h2>
+<p>Let's see how to modify our simple app to scale up.</p>
+<p>We simply have to create a <code>Hub</code> and use it to send requests, and start a few workers with our awesome model !</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">uvicorn</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+
+<span class="hll"><span class="kn">from</span> <span class="nn">gibbs</span> <span class="kn">import</span> <span class="n">Hub</span><span class="p">,</span> <span class="n">Worker</span>
+</span>
+
+<span class="k">class</span> <span class="nc">MyAwesomeModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">wait_time</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+
+
+<span class="c1"># Instanciate FastAPI app and instanciate the Hub</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="hll"><span class="n">hub</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">()</span>
+</span>
+
+<span class="c1"># Define a route that will call our model and return the result</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/request&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">simple_request</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="hll">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="k">await</span> <span class="n">hub</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">x</span><span class="p">)}</span>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="hll">    <span class="c1"># Start the workers (in another process)</span>
+</span><span class="hll">    <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span><span class="n">Worker</span><span class="p">(</span><span class="n">MyAwesomeModel</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+</span><span class="hll">    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+</span><span class="hll">        <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span>
+    <span class="c1"># Run the app</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+</code></pre></div>
+<p>Quite simple, right ?</p>
+<hr />
+<p>Now, if we use the same script as before to run 10 requests in parallel in another terminal :</p>
+<blockquote>
+<p>It tooks 0.855s to process 10 requests</p>
+</blockquote>
+<p>The time needed to deal with 10 requests is greatly reduced, by sharing the work between the 4 workers !</p>
 
               
             </article>
