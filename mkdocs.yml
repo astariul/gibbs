@@ -38,6 +38,7 @@ nav:
   - "usage.md"
   - "examples.md"
   - "design.md"
+  - "advanced.md"
   - "code_ref.md"
 
 plugins:
