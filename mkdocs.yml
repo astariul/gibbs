@@ -37,7 +37,7 @@ nav:
   - Welcome: "index.md"
   - "usage.md"
   - "examples.md"
-  - "design.md"
+  - "architecture.md"
   - "advanced.md"
   - "code_ref.md"
 

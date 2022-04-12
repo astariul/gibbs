@@ -127,7 +127,7 @@ The `Worker` class is just a process, dealing with requests sequentially by call
 The `Hub` is the class that orchestrate the requests, sending each request to the right worker (currently idle).
 
 !!! hint
-    You can see a more detailed description of how this work in [Design](design.md)
+    You can see a more detailed description of how this work in [Architecture](architecture.md)
 
 ## Use `gibbs` to scale up
 
