@@ -8,12 +8,12 @@
       
       
       
-      <link rel="icon" href="../assets/flame.svg">
+      <link rel="icon" href="../assets/skull.svg">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
     
     
       
-        <title>gibbs - Gibbs</title>
+        <title>Code reference - Gibbs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gibbs" class="md-skip">
+        <a href="#code-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Gibbs" class="md-header__button md-logo" aria-label="Gibbs" data-md-component="logo">
       
-  <img src="../assets/flame.svg" alt="logo">
+  <img src="../assets/skull.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              gibbs
+              Code reference
             
           </span>
         </div>
@@ -219,7 +219,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Gibbs" class="md-nav__button md-logo" aria-label="Gibbs" data-md-component="logo">
       
-  <img src="../assets/flame.svg" alt="logo">
+  <img src="../assets/skull.svg" alt="logo">
 
     </a>
     Gibbs
@@ -262,21 +262,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../features/" class="md-nav__link">
-        Features
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../usage/" class="md-nav__link">
         Usage
       </a>
@@ -290,34 +275,34 @@
 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
     
+      
+      
+      
+
   
   
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        Design
+      </a>
+    </li>
+  
+
     
       
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_4">
-          Code reference
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Code reference" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          Code reference
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
+
   
   
     
@@ -332,12 +317,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          gibbs
+          Code reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        gibbs
+        Code reference
       </a>
       
         
@@ -356,52 +341,31 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gibbs.hub" class="md-nav__link">
-    hub
+  <a href="#api" class="md-nav__link">
+    API
   </a>
   
-    <nav class="md-nav" aria-label="hub">
+    <nav class="md-nav" aria-label="API">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response" class="md-nav__link">
-    Response
+  <a href="#gibbs.hub.Hub" class="md-nav__link">
+    Hub
   </a>
   
-    <nav class="md-nav" aria-label="Response">
+    <nav class="md-nav" aria-label="Hub">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.code" class="md-nav__link">
-    code
+  <a href="#gibbs.hub.Hub.receive_loop" class="md-nav__link">
+    receive_loop()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.content" class="md-nav__link">
-    content
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__new__" class="md-nav__link">
-    __new__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__repr__" class="md-nav__link">
-    __repr__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__getnewargs__" class="md-nav__link">
-    __getnewargs__()
+  <a href="#gibbs.hub.Hub.request" class="md-nav__link">
+    request()
   </a>
   
 </li>
@@ -410,6 +374,53 @@
     </nav>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker" class="md-nav__link">
+    Worker
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.create_socket" class="md-nav__link">
+    create_socket()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.ping" class="md-nav__link">
+    ping()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.run" class="md-nav__link">
+    run()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal" class="md-nav__link">
+    Internal
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#gibbs.hub.UserCodeException" class="md-nav__link">
@@ -479,77 +490,79 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub" class="md-nav__link">
-    Hub
-  </a>
-  
-    <nav class="md-nav" aria-label="Hub">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub.receive_loop" class="md-nav__link">
-    receive_loop()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub.request" class="md-nav__link">
-    request()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gibbs.worker" class="md-nav__link">
-    worker
+  <a href="#constants" class="md-nav__link">
+    Constants
   </a>
   
-    <nav class="md-nav" aria-label="worker">
+    <nav class="md-nav" aria-label="Constants">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker" class="md-nav__link">
-    Worker
-  </a>
-  
-    <nav class="md-nav" aria-label="Worker">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.create_socket" class="md-nav__link">
-    create_socket()
+  <a href="#gibbs.hub.RESPONSE_BUFFER_SIZE" class="md-nav__link">
+    RESPONSE_BUFFER_SIZE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.ping" class="md-nav__link">
-    ping()
+  <a href="#gibbs.worker.CODE_FAILURE" class="md-nav__link">
+    CODE_FAILURE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.run" class="md-nav__link">
-    run()
+  <a href="#gibbs.worker.CODE_SUCCESS" class="md-nav__link">
+    CODE_SUCCESS
   </a>
   
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_HEARTBEAT_INTERVAL" class="md-nav__link">
+    DEFAULT_HEARTBEAT_INTERVAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_PORT" class="md-nav__link">
+    DEFAULT_PORT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_RESET_AFTER_N_MISS" class="md-nav__link">
+    DEFAULT_RESET_AFTER_N_MISS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.MS" class="md-nav__link">
+    MS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.PING" class="md-nav__link">
+    PING
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.PONG" class="md-nav__link">
+    PONG
+  </a>
   
 </li>
         
@@ -562,13 +575,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -600,52 +606,31 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gibbs.hub" class="md-nav__link">
-    hub
+  <a href="#api" class="md-nav__link">
+    API
   </a>
   
-    <nav class="md-nav" aria-label="hub">
+    <nav class="md-nav" aria-label="API">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response" class="md-nav__link">
-    Response
+  <a href="#gibbs.hub.Hub" class="md-nav__link">
+    Hub
   </a>
   
-    <nav class="md-nav" aria-label="Response">
+    <nav class="md-nav" aria-label="Hub">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.code" class="md-nav__link">
-    code
+  <a href="#gibbs.hub.Hub.receive_loop" class="md-nav__link">
+    receive_loop()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.content" class="md-nav__link">
-    content
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__new__" class="md-nav__link">
-    __new__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__repr__" class="md-nav__link">
-    __repr__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Response.__getnewargs__" class="md-nav__link">
-    __getnewargs__()
+  <a href="#gibbs.hub.Hub.request" class="md-nav__link">
+    request()
   </a>
   
 </li>
@@ -654,6 +639,53 @@
     </nav>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker" class="md-nav__link">
+    Worker
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.create_socket" class="md-nav__link">
+    create_socket()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.ping" class="md-nav__link">
+    ping()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.Worker.run" class="md-nav__link">
+    run()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal" class="md-nav__link">
+    Internal
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#gibbs.hub.UserCodeException" class="md-nav__link">
@@ -723,77 +755,79 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub" class="md-nav__link">
-    Hub
-  </a>
-  
-    <nav class="md-nav" aria-label="Hub">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub.receive_loop" class="md-nav__link">
-    receive_loop()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.hub.Hub.request" class="md-nav__link">
-    request()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gibbs.worker" class="md-nav__link">
-    worker
+  <a href="#constants" class="md-nav__link">
+    Constants
   </a>
   
-    <nav class="md-nav" aria-label="worker">
+    <nav class="md-nav" aria-label="Constants">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker" class="md-nav__link">
-    Worker
-  </a>
-  
-    <nav class="md-nav" aria-label="Worker">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.create_socket" class="md-nav__link">
-    create_socket()
+  <a href="#gibbs.hub.RESPONSE_BUFFER_SIZE" class="md-nav__link">
+    RESPONSE_BUFFER_SIZE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.ping" class="md-nav__link">
-    ping()
+  <a href="#gibbs.worker.CODE_FAILURE" class="md-nav__link">
+    CODE_FAILURE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#gibbs.worker.Worker.run" class="md-nav__link">
-    run()
+  <a href="#gibbs.worker.CODE_SUCCESS" class="md-nav__link">
+    CODE_SUCCESS
   </a>
   
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_HEARTBEAT_INTERVAL" class="md-nav__link">
+    DEFAULT_HEARTBEAT_INTERVAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_PORT" class="md-nav__link">
+    DEFAULT_PORT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.DEFAULT_RESET_AFTER_N_MISS" class="md-nav__link">
+    DEFAULT_RESET_AFTER_N_MISS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.MS" class="md-nav__link">
+    MS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.PING" class="md-nav__link">
+    PING
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gibbs.worker.PONG" class="md-nav__link">
+    PONG
+  </a>
   
 </li>
         
@@ -820,7 +854,8 @@
 
 
 
-<h1 id="gibbs">gibbs</h1>
+<h1 id="code-reference">Code reference</h1>
+<h2 id="api">API</h2>
 
 
   <div class="doc doc-object doc-module">
@@ -839,27 +874,448 @@
 
 
 
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 class="doc doc-heading" id="gibbs.hub.Hub">
+        <code>
+Hub        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Class acting as a hub for all the requests to send. All requests sent
+through this class will be automatically dispatched to connected workers,
+will wait for the responses and return it.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>port</code></td>
+        <td><code>int</code></td>
+        <td><p>Port number to use for the sockets. Defaults to
+DEFAULT_PORT.</p></td>
+        <td><code>5019</code></td>
+      </tr>
+      <tr>
+        <td><code>heartbeat_interval</code></td>
+        <td><code>float</code></td>
+        <td><p>Heartbeat interval used by the
+workers, in seconds. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</p></td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>resp_buffer_size</code></td>
+        <td><code>int</code></td>
+        <td><p>Maximum response buffer size. Defaults
+to RESPONSE_BUFFER_SIZE.</p></td>
+        <td><code>4096</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>gibbs/hub.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Hub</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class acting as a hub for all the requests to send. All requests sent</span>
+<span class="sd">    through this class will be automatically dispatched to connected workers,</span>
+<span class="sd">    will wait for the responses and return it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        port (int): Port number to use for the sockets. Defaults to</span>
+<span class="sd">            DEFAULT_PORT.</span>
+<span class="sd">        heartbeat_interval (float): Heartbeat interval used by the</span>
+<span class="sd">            workers, in seconds. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</span>
+<span class="sd">        resp_buffer_size (int): Maximum response buffer size. Defaults</span>
+<span class="sd">            to RESPONSE_BUFFER_SIZE.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span>
+        <span class="n">heartbeat_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span>
+        <span class="n">resp_buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">heartbeat_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span> <span class="o">=</span> <span class="n">RequestManager</span><span class="p">(</span><span class="n">resp_buffer_size</span><span class="o">=</span><span class="n">resp_buffer_size</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Receive stuff</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
+            <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">reckon</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Answer the Ping</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">PONG</span><span class="p">])</span>
+                <span class="k">continue</span>
+
+            <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
+            <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_start_if_not_started</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper method to ensure everything is properly started (socket is</span>
+<span class="sd">        initialized, receiving loop is started, etc...).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Create what we need here in this process/context</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://*:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span> <span class="o">=</span> <span class="n">WorkerManager</span><span class="p">(</span><span class="n">heartbeat_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="p">)</span>
+
+            <span class="c1"># Fire and forget : infinite loop, taking care of receiving stuff from the socket</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting receiving loop...&quot;</span><span class="p">)</span>
+            <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">receive_loop</span><span class="p">())</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raw method to send a request. This method will do the following :</span>
+<span class="sd">         * Start the receiving loop if it was not started</span>
+<span class="sd">         * Get the address of the next worker ready (blocking)</span>
+<span class="sd">         * Send the request to the worker</span>
+<span class="sd">         * Wait for the response (blocking)</span>
+<span class="sd">         * Return the result</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: Positional arguments for the request.</span>
+<span class="sd">            **kwargs: Keywords arguments for the request.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            UserCodeException: Exception raised if an exception was raised inside</span>
+<span class="sd">                user-defined code on the worker side.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: The response for the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Before anything, if the receiving loop was not started, start it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_if_not_started</span><span class="p">()</span>
+
+        <span class="c1"># Assign a unique ID to the request</span>
+        <span class="n">req_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+
+        <span class="c1"># Let the manager know that we are waiting for this request</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pinning request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">pin</span><span class="p">(</span><span class="n">req_id</span><span class="p">)</span>
+
+        <span class="c1"># Send the request</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">get_next_worker</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sending request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> to worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">])])</span>
+
+        <span class="c1"># Wait until we receive the response</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">req_id</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received result for request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Depending on what is the response, deal with it properly</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="n">CODE_FAILURE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserCodeException</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Main method, used to send a request to workers and get the result.</span>
+
+<span class="sd">        This method is a wrapper around `_request`, providing additional</span>
+<span class="sd">        functionalities :</span>
+<span class="sd">         * Timeout</span>
+<span class="sd">         * Automatic retries</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: Positional arguments for the request.</span>
+<span class="sd">            gibbs_timeout (float): Timeout for the request, in seconds.</span>
+<span class="sd">                If `None` is given, block until the request is complete.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            gibbs_retries (int): Number of retries. This argument is</span>
+<span class="sd">                used only if `gibbs_timeout` is not `None`. If `-1` is given,</span>
+<span class="sd">                indefinitely retry. Defaults to 0.</span>
+<span class="sd">            **kwargs: Keywords arguments for the request.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            asyncio.TimeoutError: Error raised if no response is received within</span>
+<span class="sd">                the given timeout.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: The response for the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gibbs_retries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+                <span class="k">raise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">retries_left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">gibbs_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s. Retrying </span><span class="si">{</span><span class="n">retries_left</span><span class="si">}</span><span class="s2"> times&quot;</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="n">retries_left</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="gibbs.hub.Hub.receive_loop">
+<code class="highlight language-python"><span class="n">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Infinite loop for receiving responses from the workers.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>gibbs/hub.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Receive stuff</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
+        <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">reckon</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Answer the Ping</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">PONG</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="gibbs.hub.Hub.request">
+<code class="highlight language-python"><span class="n">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Main method, used to send a request to workers and get the result.</p>
+<p>This method is a wrapper around <code>_request</code>, providing additional
+functionalities :
+ * Timeout
+ * Automatic retries</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>*args</code></td>
+        <td><code>Any</code></td>
+        <td><p>Positional arguments for the request.</p></td>
+        <td><code>()</code></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_timeout</code></td>
+        <td><code>float</code></td>
+        <td><p>Timeout for the request, in seconds.
+If <code>None</code> is given, block until the request is complete.
+Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_retries</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of retries. This argument is
+used only if <code>gibbs_timeout</code> is not <code>None</code>. If <code>-1</code> is given,
+indefinitely retry. Defaults to 0.</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>Keywords arguments for the request.</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>asyncio.TimeoutError</code></td>
+        <td><p>Error raised if no response is received within
+the given timeout.</p></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Any</code></td>
+      <td><p>The response for the request.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>gibbs/hub.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Main method, used to send a request to workers and get the result.</span>
+
+<span class="sd">    This method is a wrapper around `_request`, providing additional</span>
+<span class="sd">    functionalities :</span>
+<span class="sd">     * Timeout</span>
+<span class="sd">     * Automatic retries</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *args: Positional arguments for the request.</span>
+<span class="sd">        gibbs_timeout (float): Timeout for the request, in seconds.</span>
+<span class="sd">            If `None` is given, block until the request is complete.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        gibbs_retries (int): Number of retries. This argument is</span>
+<span class="sd">            used only if `gibbs_timeout` is not `None`. If `-1` is given,</span>
+<span class="sd">            indefinitely retry. Defaults to 0.</span>
+<span class="sd">        **kwargs: Keywords arguments for the request.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        asyncio.TimeoutError: Error raised if no response is received within</span>
+<span class="sd">            the given timeout.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Any: The response for the request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gibbs_retries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">retries_left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">gibbs_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s. Retrying </span><span class="si">{</span><span class="n">retries_left</span><span class="si">}</span><span class="s2"> times&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="n">retries_left</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
   <div class="doc doc-object doc-module">
 
 
-
-<h2 class="doc doc-heading" id="gibbs.hub">
-        <code>hub</code>
-
-
-
-</h2>
-
-    <div class="doc doc-contents ">
+    <div class="doc doc-contents first">
 
 
 
 
   <div class="doc doc-children">
-
 
 
 
@@ -871,9 +1327,9 @@
 
 
 
-<h3 class="doc doc-heading" id="gibbs.hub.Response">
+<h3 class="doc doc-heading" id="gibbs.worker.Worker">
         <code>
-Response            (<span title="tuple">tuple</span>)
+Worker            (<span title="multiprocessing.context.Process">Process</span>)
         </code>
 
 
@@ -882,8 +1338,201 @@ Response            (<span title="tuple">tuple</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Response(code, content)</p>
+      <p>Define a worker process. This worker process indefinitely waits for
+requests on a socket. Upon receiving a request, it processes it with the
+worker class provided, and return the response.</p>
+<p>After creating the Worker object, you have 2 different ways to run it :
+ * <code>worker.run()</code> : It will run in the current process directly (blocking,
+    infinite loop).
+ * <code>worker.start()</code> : It will start a different process and start the code
+    there (non-blocking).</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>worker_cls</code></td>
+        <td><code>Callable</code></td>
+        <td><p>Worker class containing the code that will be used
+to process requests.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_host</code></td>
+        <td><code>str</code></td>
+        <td><p>Host of the Hub. Defaults to "localhost".</p></td>
+        <td><code>&#39;localhost&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_port</code></td>
+        <td><code>int</code></td>
+        <td><p>Port of the Hub. Defaults to DEFAULT_PORT.</p></td>
+        <td><code>5019</code></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_heartbeat_interval</code></td>
+        <td><code>float</code></td>
+        <td><p>Heartbeat interval between the
+worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</p></td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>gibbs_reset_after_n_miss</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of missed heartbeats
+allowed before hard-resetting the socket and retrying. Defaults to
+DEFAULT_RESET_AFTER_N_MISS.</p></td>
+        <td><code>2</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>gibbs/worker.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Define a worker process. This worker process indefinitely waits for</span>
+<span class="sd">    requests on a socket. Upon receiving a request, it processes it with the</span>
+<span class="sd">    worker class provided, and return the response.</span>
+
+<span class="sd">    After creating the Worker object, you have 2 different ways to run it :</span>
+<span class="sd">     * `worker.run()` : It will run in the current process directly (blocking,</span>
+<span class="sd">        infinite loop).</span>
+<span class="sd">     * `worker.start()` : It will start a different process and start the code</span>
+<span class="sd">        there (non-blocking).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        worker_cls (Callable): Worker class containing the code that will be used</span>
+<span class="sd">            to process requests.</span>
+<span class="sd">        gibbs_host (str): Host of the Hub. Defaults to &quot;localhost&quot;.</span>
+<span class="sd">        gibbs_port (int): Port of the Hub. Defaults to DEFAULT_PORT.</span>
+<span class="sd">        gibbs_heartbeat_interval (float): Heartbeat interval between the</span>
+<span class="sd">            worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</span>
+<span class="sd">        gibbs_reset_after_n_miss (int): Number of missed heartbeats</span>
+<span class="sd">            allowed before hard-resetting the socket and retrying. Defaults to</span>
+<span class="sd">            DEFAULT_RESET_AFTER_N_MISS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">worker_cls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">gibbs_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="n">gibbs_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span>
+        <span class="n">gibbs_heartbeat_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span>
+        <span class="n">gibbs_reset_after_n_miss</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_RESET_AFTER_N_MISS</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span> <span class="o">=</span> <span class="n">worker_cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">gibbs_host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">gibbs_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">gibbs_heartbeat_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span> <span class="o">=</span> <span class="n">gibbs_reset_after_n_miss</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Helper method to create a socket, setting its identity and connecting</span>
+<span class="sd">        to the Hub.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (zmq.Context): ZMQ context to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            zmq.Socket: Initialized and connected socket, ready to use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create the socket, set its identity</span>
+        <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+
+        <span class="c1"># Connect to the Hub</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">socket</span>
+
+    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper method used for the heartbeat. Also takes care of keeping the</span>
+<span class="sd">        counter of heartbeats up-to-date.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            socket (zmq.Socket): Socket to use to send the heartbeat.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending ping...&quot;</span><span class="p">)</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Main method. It will initialize the worker class, and enter an</span>
+<span class="sd">        infinite loop, waiting for requests. Whenever a request is received, it</span>
+<span class="sd">        processes it with the code provided in the constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Instanciate the worker</span>
+        <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Create the socket</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+        <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Tell the Hub we are ready</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+
+        <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
+        <span class="c1"># we wait for the next one</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received something !&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Didn&#39;t receive anything for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="si">}</span><span class="s2">s (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The Hub is not answering, even after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2"> missed pings... &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Resetting the socket&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># We didn&#39;t receive anything for some time, try to ping again</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="n">PONG</span><span class="p">:</span>
+                <span class="c1"># Just a Pong, ignore it</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># From here the Hub sent us an actual request</span>
+            <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Call worker&#39;s code with the request arguments</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -894,51 +1543,6 @@ Response            (<span title="tuple">tuple</span>)
 
 
 
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h4 class="doc doc-heading" id="gibbs.hub.Response.code">
-<code class="highlight language-python"><span class="n">code</span><span class="p">:</span> <span class="kc">None</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-property"><code>property</code></small>
-      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
-  </span>
-
-</h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Alias for field number 0</p>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h4 class="doc doc-heading" id="gibbs.hub.Response.content">
-<code class="highlight language-python"><span class="n">content</span><span class="p">:</span> <span class="kc">None</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-property"><code>property</code></small>
-      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
-  </span>
-
-</h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Alias for field number 1</p>
-    </div>
-
-  </div>
-
-
 
 
 
@@ -947,48 +1551,71 @@ Response            (<span title="tuple">tuple</span>)
 
 
 
-<h4 class="doc doc-heading" id="gibbs.hub.Response.__new__">
-<code class="highlight language-python"><span class="fm">__new__</span><span class="p">(</span><span class="n">_cls</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span></code>
+<h4 class="doc doc-heading" id="gibbs.worker.Worker.create_socket">
+<code class="highlight language-python"><span class="n">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></code>
 
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
-  </span>
 
 </h4>
 
     <div class="doc doc-contents ">
 
-      <p>Create new instance of Response(code, content)</p>
+      <p>Helper method to create a socket, setting its identity and connecting
+to the Hub.</p>
 
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h4 class="doc doc-heading" id="gibbs.hub.Response.__repr__">
-<code class="highlight language-python"><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-  </span>
-
-</h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Return a nicely formatted representation string</p>
-
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>context</code></td>
+        <td><code>zmq.Context</code></td>
+        <td><p>ZMQ context to use.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>zmq.Socket</code></td>
+      <td><p>Initialized and connected socket, ready to use.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
-          <summary>Source code in <code>gibbs/hub.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="s1">&#39;Return a nicely formatted representation string&#39;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">repr_fmt</span> <span class="o">%</span> <span class="bp">self</span>
+          <summary>Source code in <code>gibbs/worker.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Helper method to create a socket, setting its identity and connecting</span>
+<span class="sd">    to the Hub.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context (zmq.Context): ZMQ context to use.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        zmq.Socket: Initialized and connected socket, ready to use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create the socket, set its identity</span>
+    <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+
+    <span class="c1"># Connect to the Hub</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">socket</span>
 </code></pre></div>
         </details>
     </div>
@@ -1001,24 +1628,132 @@ Response            (<span title="tuple">tuple</span>)
 
 
 
-<h4 class="doc doc-heading" id="gibbs.hub.Response.__getnewargs__">
-<code class="highlight language-python"><span class="n">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<h4 class="doc doc-heading" id="gibbs.worker.Worker.ping">
+<code class="highlight language-python"><span class="n">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">)</span></code>
 
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-  </span>
 
 </h4>
 
     <div class="doc doc-contents ">
 
-      <p>Return self as a plain tuple.  Used by copy and pickle.</p>
+      <p>Helper method used for the heartbeat. Also takes care of keeping the
+counter of heartbeats up-to-date.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>socket</code></td>
+        <td><code>zmq.Socket</code></td>
+        <td><p>Socket to use to send the heartbeat.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>gibbs/worker.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper method used for the heartbeat. Also takes care of keeping the</span>
+<span class="sd">    counter of heartbeats up-to-date.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        socket (zmq.Socket): Socket to use to send the heartbeat.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending ping...&quot;</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="gibbs.worker.Worker.run">
+<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Main method. It will initialize the worker class, and enter an
+infinite loop, waiting for requests. Whenever a request is received, it
+processes it with the code provided in the constructor.</p>
 
         <details class="quote">
-          <summary>Source code in <code>gibbs/hub.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="s1">&#39;Return self as a plain tuple.  Used by copy and pickle.&#39;</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+          <summary>Source code in <code>gibbs/worker.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Main method. It will initialize the worker class, and enter an</span>
+<span class="sd">    infinite loop, waiting for requests. Whenever a request is received, it</span>
+<span class="sd">    processes it with the code provided in the constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Instanciate the worker</span>
+    <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Create the socket</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Tell the Hub we are ready</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+
+    <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
+    <span class="c1"># we wait for the next one</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received something !&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Didn&#39;t receive anything for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="si">}</span><span class="s2">s (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The Hub is not answering, even after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2"> missed pings... &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Resetting the socket&quot;</span>
+                <span class="p">)</span>
+                <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># We didn&#39;t receive anything for some time, try to ping again</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="n">PONG</span><span class="p">:</span>
+            <span class="c1"># Just a Pong, ignore it</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># From here the Hub sent us an actual request</span>
+        <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Call worker&#39;s code with the request arguments</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
 </code></pre></div>
         </details>
     </div>
@@ -1034,6 +1769,36 @@ Response            (<span title="tuple">tuple</span>)
     </div>
 
   </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<h2 id="internal">Internal</h2>
+
+
+  <div class="doc doc-object doc-module">
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
 
 
 
@@ -1730,213 +2495,24 @@ to the given request ID.</p>
 
 
 
-  <div class="doc doc-object doc-class">
 
 
 
-<h3 class="doc doc-heading" id="gibbs.hub.Hub">
-        <code>
-Hub        </code>
+
+  </div>
+
+    </div>
+
+  </div>
+
+<h2 id="constants">Constants</h2>
 
 
+  <div class="doc doc-object doc-module">
 
-</h3>
 
-    <div class="doc doc-contents ">
+    <div class="doc doc-contents first">
 
-      <p>Class acting as a hub for all the requests to send. All requests sent
-through this class will be automatically dispatched to connected workers,
-will wait for the responses and return it.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>port</code></td>
-        <td><code>int</code></td>
-        <td><p>Port number to use for the sockets. Defaults to
-DEFAULT_PORT.</p></td>
-        <td><code>5019</code></td>
-      </tr>
-      <tr>
-        <td><code>heartbeat_interval</code></td>
-        <td><code>float</code></td>
-        <td><p>Heartbeat interval used by the
-workers, in seconds. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</p></td>
-        <td><code>1</code></td>
-      </tr>
-      <tr>
-        <td><code>resp_buffer_size</code></td>
-        <td><code>int</code></td>
-        <td><p>Maximum response buffer size. Defaults
-to RESPONSE_BUFFER_SIZE.</p></td>
-        <td><code>4096</code></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>gibbs/hub.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Hub</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class acting as a hub for all the requests to send. All requests sent</span>
-<span class="sd">    through this class will be automatically dispatched to connected workers,</span>
-<span class="sd">    will wait for the responses and return it.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        port (int): Port number to use for the sockets. Defaults to</span>
-<span class="sd">            DEFAULT_PORT.</span>
-<span class="sd">        heartbeat_interval (float): Heartbeat interval used by the</span>
-<span class="sd">            workers, in seconds. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</span>
-<span class="sd">        resp_buffer_size (int): Maximum response buffer size. Defaults</span>
-<span class="sd">            to RESPONSE_BUFFER_SIZE.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span>
-        <span class="n">heartbeat_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span>
-        <span class="n">resp_buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">heartbeat_interval</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span> <span class="o">=</span> <span class="n">RequestManager</span><span class="p">(</span><span class="n">resp_buffer_size</span><span class="o">=</span><span class="n">resp_buffer_size</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="c1"># Receive stuff</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
-            <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">reckon</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="c1"># Answer the Ping</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">PONG</span><span class="p">])</span>
-                <span class="k">continue</span>
-
-            <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
-            <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_start_if_not_started</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper method to ensure everything is properly started (socket is</span>
-<span class="sd">        initialized, receiving loop is started, etc...).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Create what we need here in this process/context</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://*:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span> <span class="o">=</span> <span class="n">WorkerManager</span><span class="p">(</span><span class="n">heartbeat_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="p">)</span>
-
-            <span class="c1"># Fire and forget : infinite loop, taking care of receiving stuff from the socket</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting receiving loop...&quot;</span><span class="p">)</span>
-            <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">receive_loop</span><span class="p">())</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Raw method to send a request. This method will do the following :</span>
-<span class="sd">         * Start the receiving loop if it was not started</span>
-<span class="sd">         * Get the address of the next worker ready (blocking)</span>
-<span class="sd">         * Send the request to the worker</span>
-<span class="sd">         * Wait for the response (blocking)</span>
-<span class="sd">         * Return the result</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *args: Positional arguments for the request.</span>
-<span class="sd">            **kwargs: Keywords arguments for the request.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            UserCodeException: Exception raised if an exception was raised inside</span>
-<span class="sd">                user-defined code on the worker side.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Any: The response for the request.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Before anything, if the receiving loop was not started, start it</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_start_if_not_started</span><span class="p">()</span>
-
-        <span class="c1"># Assign a unique ID to the request</span>
-        <span class="n">req_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
-
-        <span class="c1"># Let the manager know that we are waiting for this request</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pinning request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">pin</span><span class="p">(</span><span class="n">req_id</span><span class="p">)</span>
-
-        <span class="c1"># Send the request</span>
-        <span class="n">address</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">get_next_worker</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sending request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> to worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">])])</span>
-
-        <span class="c1"># Wait until we receive the response</span>
-        <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">req_id</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received result for request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Depending on what is the response, deal with it properly</span>
-        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="n">CODE_FAILURE</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UserCodeException</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">res</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Main method, used to send a request to workers and get the result.</span>
-
-<span class="sd">        This method is a wrapper around `_request`, providing additional</span>
-<span class="sd">        functionalities :</span>
-<span class="sd">         * Timeout</span>
-<span class="sd">         * Automatic retries</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *args: Positional arguments for the request.</span>
-<span class="sd">            gibbs_timeout (float): Timeout for the request, in seconds.</span>
-<span class="sd">                If `None` is given, block until the request is complete.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            gibbs_retries (int): Number of retries. This argument is</span>
-<span class="sd">                used only if `gibbs_timeout` is not `None`. If `-1` is given,</span>
-<span class="sd">                indefinitely retry. Defaults to 0.</span>
-<span class="sd">            **kwargs: Keywords arguments for the request.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            asyncio.TimeoutError: Error raised if no response is received within</span>
-<span class="sd">                the given timeout.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Any: The response for the request.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gibbs_retries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-                <span class="k">raise</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">retries_left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">gibbs_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s. Retrying </span><span class="si">{</span><span class="n">retries_left</span><span class="si">}</span><span class="s2"> times&quot;</span>
-                <span class="p">)</span>
-                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="n">retries_left</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div>
-        </details>
 
 
 
@@ -1947,207 +2523,22 @@ to RESPONSE_BUFFER_SIZE.</p></td>
 
 
 
+  <div class="doc doc-object doc-attribute">
 
 
 
+<h3 class="doc doc-heading" id="gibbs.hub.RESPONSE_BUFFER_SIZE">
+<code class="highlight language-python"><span class="n">RESPONSE_BUFFER_SIZE</span><span class="p">:</span> <span class="nb">int</span></code>
 
-  <div class="doc doc-object doc-method">
 
-
-
-<h4 class="doc doc-heading" id="gibbs.hub.Hub.receive_loop">
-<code class="highlight language-python"><span class="n">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-async"><code>async</code></small>
-  </span>
-
-</h4>
+</h3>
 
     <div class="doc doc-contents ">
 
-      <p>Infinite loop for receiving responses from the workers.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>gibbs/hub.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">receive_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Infinite loop for receiving responses from the workers.&quot;&quot;&quot;</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="c1"># Receive stuff</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Receiving...&quot;</span><span class="p">)</span>
-        <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="n">frames</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received something from worker #</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Since we received a response from this worker, it means it&#39;s ready for more !</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_manager</span><span class="o">.</span><span class="n">reckon</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># Answer the Ping</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Answering the ping&quot;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="n">address</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">PONG</span><span class="p">])</span>
-            <span class="k">continue</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="o">=</span> <span class="n">frames</span>
-        <span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received response from request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">req_manager</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">req_id</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-</code></pre></div>
-        </details>
     </div>
 
   </div>
 
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h4 class="doc doc-heading" id="gibbs.hub.Hub.request">
-<code class="highlight language-python"><span class="n">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-async"><code>async</code></small>
-  </span>
-
-</h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Main method, used to send a request to workers and get the result.</p>
-<p>This method is a wrapper around <code>_request</code>, providing additional
-functionalities :
- * Timeout
- * Automatic retries</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>*args</code></td>
-        <td><code>Any</code></td>
-        <td><p>Positional arguments for the request.</p></td>
-        <td><code>()</code></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_timeout</code></td>
-        <td><code>float</code></td>
-        <td><p>Timeout for the request, in seconds.
-If <code>None</code> is given, block until the request is complete.
-Defaults to None.</p></td>
-        <td><code>None</code></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_retries</code></td>
-        <td><code>int</code></td>
-        <td><p>Number of retries. This argument is
-used only if <code>gibbs_timeout</code> is not <code>None</code>. If <code>-1</code> is given,
-indefinitely retry. Defaults to 0.</p></td>
-        <td><code>0</code></td>
-      </tr>
-      <tr>
-        <td><code>**kwargs</code></td>
-        <td><code>Any</code></td>
-        <td><p>Keywords arguments for the request.</p></td>
-        <td><code>{}</code></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Exceptions:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>asyncio.TimeoutError</code></td>
-        <td><p>Error raised if no response is received within
-the given timeout.</p></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>Any</code></td>
-      <td><p>The response for the request.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>gibbs/hub.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Main method, used to send a request to workers and get the result.</span>
-
-<span class="sd">    This method is a wrapper around `_request`, providing additional</span>
-<span class="sd">    functionalities :</span>
-<span class="sd">     * Timeout</span>
-<span class="sd">     * Automatic retries</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        *args: Positional arguments for the request.</span>
-<span class="sd">        gibbs_timeout (float): Timeout for the request, in seconds.</span>
-<span class="sd">            If `None` is given, block until the request is complete.</span>
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        gibbs_retries (int): Number of retries. This argument is</span>
-<span class="sd">            used only if `gibbs_timeout` is not `None`. If `-1` is given,</span>
-<span class="sd">            indefinitely retry. Defaults to 0.</span>
-<span class="sd">        **kwargs: Keywords arguments for the request.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        asyncio.TimeoutError: Error raised if no response is received within</span>
-<span class="sd">            the given timeout.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Any: The response for the request.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">gibbs_retries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">retries_left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">gibbs_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Request failed : no response received within </span><span class="si">{</span><span class="n">gibbs_timeout</span><span class="si">}</span><span class="s2">s. Retrying </span><span class="si">{</span><span class="n">retries_left</span><span class="si">}</span><span class="s2"> times&quot;</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="n">gibbs_timeout</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="n">retries_left</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
 
 
 
@@ -2166,15 +2557,7 @@ the given timeout.</p></td>
   <div class="doc doc-object doc-module">
 
 
-
-<h2 class="doc doc-heading" id="gibbs.worker">
-        <code>worker</code>
-
-
-
-</h2>
-
-    <div class="doc doc-contents ">
+    <div class="doc doc-contents first">
 
 
 
@@ -2186,457 +2569,89 @@ the given timeout.</p></td>
 
 
 
+  <div class="doc doc-object doc-attribute">
 
 
 
-
-
-
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h3 class="doc doc-heading" id="gibbs.worker.Worker">
-        <code>
-Worker            (<span title="multiprocessing.context.Process">Process</span>)
-        </code>
-
+<h3 class="doc doc-heading" id="gibbs.worker.CODE_FAILURE">
+<code class="highlight language-python"><span class="n">CODE_FAILURE</span><span class="p">:</span> <span class="nb">int</span></code>
 
 
 </h3>
 
     <div class="doc doc-contents ">
 
-      <p>Define a worker process. This worker process indefinitely waits for
-requests on a socket. Upon receiving a request, it processes it with the
-worker class provided, and return the response.</p>
-<p>After creating the Worker object, you have 2 different ways to run it :
- * <code>worker.run()</code> : It will run in the current process directly (blocking,
-    infinite loop).
- * <code>worker.start()</code> : It will start a different process and start the code
-    there (non-blocking).</p>
+    </div>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>worker_cls</code></td>
-        <td><code>Callable</code></td>
-        <td><p>Worker class containing the code that will be used
-to process requests.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_host</code></td>
-        <td><code>str</code></td>
-        <td><p>Host of the Hub. Defaults to "localhost".</p></td>
-        <td><code>&#39;localhost&#39;</code></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_port</code></td>
-        <td><code>int</code></td>
-        <td><p>Port of the Hub. Defaults to DEFAULT_PORT.</p></td>
-        <td><code>5019</code></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_heartbeat_interval</code></td>
-        <td><code>float</code></td>
-        <td><p>Heartbeat interval between the
-worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</p></td>
-        <td><code>1</code></td>
-      </tr>
-      <tr>
-        <td><code>gibbs_reset_after_n_miss</code></td>
-        <td><code>int</code></td>
-        <td><p>Number of missed heartbeats
-allowed before hard-resetting the socket and retrying. Defaults to
-DEFAULT_RESET_AFTER_N_MISS.</p></td>
-        <td><code>2</code></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>gibbs/worker.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Define a worker process. This worker process indefinitely waits for</span>
-<span class="sd">    requests on a socket. Upon receiving a request, it processes it with the</span>
-<span class="sd">    worker class provided, and return the response.</span>
-
-<span class="sd">    After creating the Worker object, you have 2 different ways to run it :</span>
-<span class="sd">     * `worker.run()` : It will run in the current process directly (blocking,</span>
-<span class="sd">        infinite loop).</span>
-<span class="sd">     * `worker.start()` : It will start a different process and start the code</span>
-<span class="sd">        there (non-blocking).</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        worker_cls (Callable): Worker class containing the code that will be used</span>
-<span class="sd">            to process requests.</span>
-<span class="sd">        gibbs_host (str): Host of the Hub. Defaults to &quot;localhost&quot;.</span>
-<span class="sd">        gibbs_port (int): Port of the Hub. Defaults to DEFAULT_PORT.</span>
-<span class="sd">        gibbs_heartbeat_interval (float): Heartbeat interval between the</span>
-<span class="sd">            worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.</span>
-<span class="sd">        gibbs_reset_after_n_miss (int): Number of missed heartbeats</span>
-<span class="sd">            allowed before hard-resetting the socket and retrying. Defaults to</span>
-<span class="sd">            DEFAULT_RESET_AFTER_N_MISS.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">worker_cls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-        <span class="n">gibbs_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
-        <span class="n">gibbs_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span>
-        <span class="n">gibbs_heartbeat_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">,</span>
-        <span class="n">gibbs_reset_after_n_miss</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_RESET_AFTER_N_MISS</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span> <span class="o">=</span> <span class="n">worker_cls</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">gibbs_host</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">gibbs_port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">=</span> <span class="n">gibbs_heartbeat_interval</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span> <span class="o">=</span> <span class="n">gibbs_reset_after_n_miss</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">def</span> <span class="nf">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Helper method to create a socket, setting its identity and connecting</span>
-<span class="sd">        to the Hub.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            context (zmq.Context): ZMQ context to use.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            zmq.Socket: Initialized and connected socket, ready to use.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Create the socket, set its identity</span>
-        <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
-        <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
-
-        <span class="c1"># Connect to the Hub</span>
-        <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">socket</span>
-
-    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper method used for the heartbeat. Also takes care of keeping the</span>
-<span class="sd">        counter of heartbeats up-to-date.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            socket (zmq.Socket): Socket to use to send the heartbeat.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending ping...&quot;</span><span class="p">)</span>
-        <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Main method. It will initialize the worker class, and enter an</span>
-<span class="sd">        infinite loop, waiting for requests. Whenever a request is received, it</span>
-<span class="sd">        processes it with the code provided in the constructor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Instanciate the worker</span>
-        <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span><span class="p">)</span>
-
-        <span class="c1"># Create the socket</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-        <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Tell the Hub we are ready</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-
-        <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
-        <span class="c1"># we wait for the next one</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received something !&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Didn&#39;t receive anything for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="si">}</span><span class="s2">s (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The Hub is not answering, even after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2"> missed pings... &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Resetting the socket&quot;</span>
-                    <span class="p">)</span>
-                    <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
-
-                <span class="c1"># We didn&#39;t receive anything for some time, try to ping again</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-                <span class="k">continue</span>
-
-            <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="n">PONG</span><span class="p">:</span>
-                <span class="c1"># Just a Pong, ignore it</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
-                <span class="k">continue</span>
-
-            <span class="c1"># From here the Hub sent us an actual request</span>
-            <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Call worker&#39;s code with the request arguments</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
-                <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
-</code></pre></div>
-        </details>
+  </div>
 
 
 
-  <div class="doc doc-children">
+  <div class="doc doc-object doc-attribute">
 
 
 
+<h3 class="doc doc-heading" id="gibbs.worker.CODE_SUCCESS">
+<code class="highlight language-python"><span class="n">CODE_SUCCESS</span><span class="p">:</span> <span class="nb">int</span></code>
 
 
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h4 class="doc doc-heading" id="gibbs.worker.Worker.create_socket">
-<code class="highlight language-python"><span class="n">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></code>
-
-
-</h4>
+</h3>
 
     <div class="doc doc-contents ">
 
-      <p>Helper method to create a socket, setting its identity and connecting
-to the Hub.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>context</code></td>
-        <td><code>zmq.Context</code></td>
-        <td><p>ZMQ context to use.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>zmq.Socket</code></td>
-      <td><p>Initialized and connected socket, ready to use.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>gibbs/worker.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Helper method to create a socket, setting its identity and connecting</span>
-<span class="sd">    to the Hub.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        context (zmq.Context): ZMQ context to use.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        zmq.Socket: Initialized and connected socket, ready to use.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create the socket, set its identity</span>
-    <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
-
-    <span class="c1"># Connect to the Hub</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">socket</span>
-</code></pre></div>
-        </details>
     </div>
 
   </div>
 
 
 
-  <div class="doc doc-object doc-method">
+  <div class="doc doc-object doc-attribute">
 
 
 
-<h4 class="doc doc-heading" id="gibbs.worker.Worker.ping">
-<code class="highlight language-python"><span class="n">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">)</span></code>
+<h3 class="doc doc-heading" id="gibbs.worker.DEFAULT_HEARTBEAT_INTERVAL">
+<code class="highlight language-python"><span class="n">DEFAULT_HEARTBEAT_INTERVAL</span><span class="p">:</span> <span class="nb">float</span></code>
 
 
-</h4>
+</h3>
 
     <div class="doc doc-contents ">
 
-      <p>Helper method used for the heartbeat. Also takes care of keeping the
-counter of heartbeats up-to-date.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>socket</code></td>
-        <td><code>zmq.Socket</code></td>
-        <td><p>Socket to use to send the heartbeat.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>gibbs/worker.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket</span><span class="p">:</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Socket</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Helper method used for the heartbeat. Also takes care of keeping the</span>
-<span class="sd">    counter of heartbeats up-to-date.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        socket (zmq.Socket): Socket to use to send the heartbeat.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending ping...&quot;</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PING</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div>
-        </details>
     </div>
 
   </div>
 
 
 
-  <div class="doc doc-object doc-method">
+  <div class="doc doc-object doc-attribute">
 
 
 
-<h4 class="doc doc-heading" id="gibbs.worker.Worker.run">
-<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<h3 class="doc doc-heading" id="gibbs.worker.DEFAULT_PORT">
+<code class="highlight language-python"><span class="n">DEFAULT_PORT</span><span class="p">:</span> <span class="nb">int</span></code>
 
 
-</h4>
+</h3>
 
     <div class="doc doc-contents ">
 
-      <p>Main method. It will initialize the worker class, and enter an
-infinite loop, waiting for requests. Whenever a request is received, it
-processes it with the code provided in the constructor.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>gibbs/worker.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Main method. It will initialize the worker class, and enter an</span>
-<span class="sd">    infinite loop, waiting for requests. Whenever a request is received, it</span>
-<span class="sd">    processes it with the code provided in the constructor.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Instanciate the worker</span>
-    <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_kwargs</span><span class="p">)</span>
-
-    <span class="c1"># Create the socket</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-    <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Worker ready to roll&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Tell the Hub we are ready</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-
-    <span class="c1"># Indefinitely wait for requests : when we are done with one request,</span>
-    <span class="c1"># we wait for the next one</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for request...&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span> <span class="o">*</span> <span class="n">MS</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">):</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">workload</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">NOBLOCK</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received something !&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Didn&#39;t receive anything for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_t</span><span class="si">}</span><span class="s2">s (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_n_miss</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The Hub is not answering, even after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span><span class="si">}</span><span class="s2"> missed pings... &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Resetting the socket&quot;</span>
-                <span class="p">)</span>
-                <span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_socket</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">waiting_pong</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="c1"># We didn&#39;t receive anything for some time, try to ping again</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ping</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-            <span class="k">continue</span>
-
-        <span class="k">if</span> <span class="n">workload</span> <span class="o">==</span> <span class="n">PONG</span><span class="p">:</span>
-            <span class="c1"># Just a Pong, ignore it</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It was just a pong...&quot;</span><span class="p">)</span>
-            <span class="k">continue</span>
-
-        <span class="c1"># From here the Hub sent us an actual request</span>
-        <span class="n">req_id</span><span class="p">,</span> <span class="n">req_args</span><span class="p">,</span> <span class="n">req_kwargs</span> <span class="o">=</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">unpackb</span><span class="p">(</span><span class="n">workload</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request #</span><span class="si">{</span><span class="n">req_id</span><span class="si">}</span><span class="s2"> received&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Call worker&#39;s code with the request arguments</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">req_args</span><span class="p">,</span> <span class="o">**</span><span class="n">req_kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in user-defined __call__ method : </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_FAILURE</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()])])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending back the response&quot;</span><span class="p">)</span>
-            <span class="n">socket</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">([</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">msgpack</span><span class="o">.</span><span class="n">packb</span><span class="p">([</span><span class="n">req_id</span><span class="p">,</span> <span class="n">CODE_SUCCESS</span><span class="p">,</span> <span class="n">res</span><span class="p">])])</span>
-</code></pre></div>
-        </details>
     </div>
 
   </div>
 
 
 
+  <div class="doc doc-object doc-attribute">
 
 
-  </div>
+
+<h3 class="doc doc-heading" id="gibbs.worker.DEFAULT_RESET_AFTER_N_MISS">
+<code class="highlight language-python"><span class="n">DEFAULT_RESET_AFTER_N_MISS</span><span class="p">:</span> <span class="nb">int</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
 
     </div>
 
@@ -2644,15 +2659,61 @@ processes it with the code provided in the constructor.</p>
 
 
 
+  <div class="doc doc-object doc-attribute">
 
 
 
+<h3 class="doc doc-heading" id="gibbs.worker.MS">
+<code class="highlight language-python"><span class="n">MS</span><span class="p">:</span> <span class="nb">int</span></code>
 
-  </div>
+
+</h3>
+
+    <div class="doc doc-contents ">
 
     </div>
 
   </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 class="doc doc-heading" id="gibbs.worker.PING">
+<code class="highlight language-python"><span class="n">PING</span><span class="p">:</span> <span class="nb">bytes</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 class="doc doc-heading" id="gibbs.worker.PONG">
+<code class="highlight language-python"><span class="n">PONG</span><span class="p">:</span> <span class="nb">bytes</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
 
 
 
@@ -2675,7 +2736,7 @@ processes it with the code provided in the constructor.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../usage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Usage" rel="prev">
+        <a href="../design/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Design" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2684,7 +2745,7 @@ processes it with the code provided in the constructor.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Usage
+              Design
             </div>
           </div>
         </a>
