@@ -27,7 +27,7 @@ class MyAwesomeModel:
         return x**2
 ```
 
-This model simply return the squared input, after similating a certain processing time.
+This model simply return the squared input, after simulating a certain processing time.
 
 ---
 
