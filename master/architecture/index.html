@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/skull.svg">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.120efc48.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.8c5ef100.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.9647289d.min.css">
@@ -301,9 +301,54 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Architecture
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Architecture
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tooling" class="md-nav__link">
+    Tooling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pattern" class="md-nav__link">
+    Pattern
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heartbeat" class="md-nav__link">
+    Heartbeat
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -359,6 +404,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tooling" class="md-nav__link">
+    Tooling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pattern" class="md-nav__link">
+    Pattern
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heartbeat" class="md-nav__link">
+    Heartbeat
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -376,6 +450,51 @@
 
 
 <h1 id="architecture">Architecture</h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This page contains advanced technical details about <code>gibbs</code>. You can probably skip it if you just want to use the library.</p>
+</div>
+<h2 id="tooling">Tooling</h2>
+<p><code>gibbs</code> relies on the <code>zmq</code> library for communication between the hub and the workers.</p>
+<p><code>zmq</code> is a low-level networking library, providing us with TCP sockets. This gives us performances, and the ability to have workers on different machines.</p>
+<h2 id="pattern">Pattern</h2>
+<p><code>gibbs</code> implement a modified version of the <strong><em>Paranoid Pirate Pattern</em></strong>.</p>
+<p>You can read more about the Paranoid Pirate Pattern in the <a href="https://zguide.zeromq.org/docs/chapter4/#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern">zmq guide</a>. But basically :</p>
+<ul>
+<li>It is a <strong>reliable</strong> pattern (it can handle failures)</li>
+<li>It relies on the <em>REQUEST - REPLY</em> sockets (and their asynchronous equivalent : <em>ROUTER - DEALER</em>)</li>
+<li>It automatically balance requests across workers as they come</li>
+</ul>
+<hr />
+<p>Here is a schema for the Paranoid Pirate Pattern implemented in <code>gibbs</code> :</p>
+<p><img alt="" src="../img/gibbs_base.png" /></p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>As you can see the the original Paranoid Pirate Pattern is slightly modified : the clients and the queue are merged into a single component, called "Hub".</p>
+</div>
+<hr />
+<p>Let's see how these components interact with each other to deal with parallel requests :</p>
+<p><img alt="" src="../img/gibbs_parallel.png" /></p>
+<p>The Hub simply keeps a list of workers that are ready, and send incoming requests to one of the ready worker.</p>
+<p>Each worker deal with the request it receives. So with two workers, we can deal with two requests in parallel, as shown in the figure above.</p>
+<p>When receiving the response from the worker, the Hub marks it as ready again.</p>
+<h2 id="heartbeat">Heartbeat</h2>
+<p>In the <a href="https://zguide.zeromq.org/docs/chapter4/#Heartbeating-for-Paranoid-Pirate">zmq guide</a>, the Paranoid Pirate Pattern implements a <em>One-way heartbeat</em>.</p>
+<p>In <code>gibbs</code> though, the heartbeat is implemented as a <em>Ping-pong heartbeat</em>.</p>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Heartbeat is necessary to have <em>robustness</em>, in case of workers or Hub crash.</p>
+</div>
+<hr />
+<p>Here is how heartbeat works :</p>
+<p><img alt="" src="../img/gibbs_heartbeat.png" /></p>
+<p>The workers always initiate the heartbeat (<em>ping</em>), and the hub answer it (<em>pong</em>).</p>
+<p>If the worker keeps sending pings but does not receive pongs, we know the Hub is dead. In this case the worker will try to reconnect his socket. So when the Hub is restarted, the worker will automatically reconnect.</p>
+<p>If the Hub didn't receive a heartbeat from some time, we know this worker is dead. In this case the worker is removed from the list of workers ready, so no requests are sent to this worker.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is a small time interval where a worker can die and the Hub still thinks it's alive. If a request is sent in this interval, the request will fail. To solve this, you can check the <a href="../advanced/#retrials-timeouts">section about automatic retrials</a>.</p>
+</div>
 
               
             </article>
@@ -439,7 +558,7 @@
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections"], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      <script src="../assets/javascripts/bundle.748e2769.min.js"></script>
       
     
   </body>
