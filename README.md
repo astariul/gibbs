@@ -1,6 +1,6 @@
 <h1 align="center">gibbs</h1>
 <p align="center">
-Python Template repository
+Scale your ML workers asynchronously across processes and machines
 </p>
 
 <p align="center">
@@ -22,7 +22,6 @@ Python Template repository
   <a href="#description">Description</a> •
   <a href="#install">Install</a> •
   <a href="#usage">Usage</a> •
-  <a href="#use-this-template">Use this template</a> •
   <a href="#faq">FAQ</a> •
   <a href="#contribute">Contribute</a>
   <br>
@@ -32,18 +31,13 @@ Python Template repository
 
 <h2 align="center">Description</h2>
 
-**`gibbs`** stands for **Py**thon **te**mplate **re**pository.
+**`gibbs`** is a python package that helps you scale your ML workers (or any python code) across processes and machines, asynchronously.
 
-It's just a template repository for python, with the following features :
+`gibbs` is :
 
-* 📚 Beautiful documentation with [Material for Mkdocs](https://squidfunk.github.io/mkdocs-material/), published as a Github page with [mike](https://github.com/jimporter/mike) automatically
-* ✨ Code style checks with [isort](https://github.com/PyCQA/isort), [black](https://github.com/psf/black), [flake518](https://github.com/carstencodes/flake518), [darglint](https://github.com/terrencepreilly/darglint)
-* 🅿️ Easy development with [pre-commit hooks](https://pre-commit.com/)
-* ✅ Tests with [pytest](https://docs.pytest.org/) and coverage without external tools
-* :octocat: CI with [Github actions](https://github.com/features/actions)
-* 📝 Issues & PR templates
-* 🤖 Stale bot & Dependabot
-* 🚀 Releases automatically published to PyPi
+* ⚡️ Highly performant
+* 🔀 Asynchronous
+* 🐥 Easy-to-use
 
 
 <h2 align="center">Install</h2>
@@ -55,58 +49,62 @@ Install `gibbs` by running :
 pip install gibbs
 ```
 
----
-
-For development, you can install it locally by first cloning the repository :
-
-```
-git clone https://github.com/astariul/gibbs.git
-cd gibbs
-pip install -e .
-```
-
 
 <h2 align="center">Usage</h2>
 
-`gibbs` does not contain any useful code because it's a template repository.  
-But you can check if the package is correctly installed with :
+After defining your awesome model :
 
 ```python
-from gibbs import is_odd
+class MyAwesomeModel:
+    def __init__(self, wait_time=0.25):
+        super().__init__()
+        self.w = wait_time
 
-print(is_odd(2))  # False
+    def __call__(self, x):
+        time.sleep(self.w)
+        return x**2
 ```
 
+You can simply start a few workers serving the model :
 
-<h2 align="center">Use this template</h2>
+```python
+from gibbs import Worker
 
-To use this template, click the button "Use this template" :
+for _ in range(4):
+    Worker(MyAwesomeModel).start()
+```
 
-<p align="center">
-  <a href="https://github.com/astariul/gibbs/generate"><img src="https://img.shields.io/badge/%20-Use%20this%20template-green?style=for-the-badge&color=347d39" alt="Use template" /></a>
-</p>
+And send requests through the Hub :
 
-It will prompt you to create a new Github repository.
+```python
+from gibbs import Hub
 
-Then replace the content  in your freshly created repository, with your own package name, own code, and update the links to point to your own repository.  
-More details in the [documentation](https://astariul.github.io/gibbs/usage).
+hub = Hub()
+
+# In an async function
+await hub.request(34)
+```
+
+And that's it !
+
+---
+
+Make sure to check the [Usage page of the documentation](https://astariul.github.io/gibbs/usage/) for a more detailed and step-by-step explanation.
+
+Or you can run some examples from the `examples/` folder.
 
 
 <h2 align="center">FAQ</h2>
 
-#### ❓ **Why creating yet another template, there is already plenty on the internet ?**
+#### ❓ **How `gibbs` works ?**
 
-True, but I couldn't find one that entirely satisfies my needs and uses
-the tools I want.
+`gibbs` simply run your model code in separate processes, and send requests to the right process to ensure requests are treated in parallel.
 
-For example, a lot of templates uses **Sphinx** for the documentation, but I'm much more comfortable with **MkDocs**. Or the test coverage was provided by an external tools, but I wanted everything in Github. Etc...  
-Hence the creation of this repository.
+`gibbs` uses a modified form of [the Paranoid Pirate Pattern from the zmq guide](https://zguide.zeromq.org/docs/chapter4/#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern).
 
-#### ❓ **Can I use this template for a private repository ?**
+#### ❓ **Why the name "gibbs" ?**
 
-Absolutely !
-
-But some things might not work (for example the release badge), and you might want to remove some features (like automatically pushing to PyPi, or publishing the documentation to Github page)
+Joshamee Gibbs is the devoted first mate of Captain Jack Sparrow. Since we are using the Paranoid Pirate Pattern, we needed a pirate name !
 
 <h2 align="center">Contribute</h2>
 

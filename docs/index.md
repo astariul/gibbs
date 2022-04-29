@@ -4,11 +4,11 @@
 
 Welcome to the documentation of the `gibbs` package.
 
-`gibbs` is a package that help you scale your ML workers (and pure python code) across processes and machines.
+`gibbs` is a package that help you scale your ML workers (or any python code) across processes and machines, asynchronously.
 
 ---
 
-Features :
+`gibbs` is :
 
 * ⚡️ Highly performant
 * 🔀 Asynchronous
