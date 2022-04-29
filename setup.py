@@ -27,7 +27,7 @@ setuptools.setup(
     version="0.2.0.dev0",
     author="Nicolas REMOND",
     author_email="remondnicola@gmail.com",
-    description="Easily scale your ML models",
+    description="Scale your ML workers asynchronously across processes and machines",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/astariul/gibbs",
