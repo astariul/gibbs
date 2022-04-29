@@ -9,12 +9,6 @@ Scale your ML workers asynchronously across processes and machines
     <a href="https://github.com/astariul/gibbs/actions/workflows/lint.yaml"><img src="https://github.com/astariul/gibbs/actions/workflows/lint.yaml/badge.svg" alt="Lint status" /></a>
     <img src=".github/badges/coverage.svg" alt="Coverage status" />
     <a href="https://astariul.github.io/gibbs"><img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https%3A%2F%2Fastariul.github.io%2Fgibbs" alt="Docs" /></a>
-    <br>
-    <a href="https://pycqa.github.io/isort/"><img src="https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat" alt="isort" /></a>
-    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="black" /></a>
-    <a href="https://github.com/PyCQA/flake8"><img src="https://img.shields.io/badge/code%20style-flake8-blue" alt="flake8" /></a>
-    <a href="https://github.com/terrencepreilly/darglint"><img src="https://img.shields.io/badge/docstrings-darglint-blue" alt="darglint" /></a>
-    <a href="https://github.com/pre-commit/pre-commit"><img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white" alt="pre-commit"></a>
     <a href="https://github.com/astariul/gibbs/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="licence" /></a>
 </p>
 
@@ -55,6 +49,8 @@ pip install gibbs
 After defining your awesome model :
 
 ```python
+import time
+
 class MyAwesomeModel:
     def __init__(self, wait_time=0.25):
         super().__init__()
@@ -89,7 +85,7 @@ And that's it !
 
 ---
 
-Make sure to check the [Usage page of the documentation](https://astariul.github.io/gibbs/usage/) for a more detailed and step-by-step explanation.
+Make sure to check the [documentation](https://astariul.github.io/gibbs/usage/) for a more detailed explanation.
 
 Or you can run some examples from the `examples/` folder.
 
@@ -104,11 +100,12 @@ Or you can run some examples from the `examples/` folder.
 
 #### ❓ **Why the name "gibbs" ?**
 
-Joshamee Gibbs is the devoted first mate of Captain Jack Sparrow. Since we are using the Paranoid Pirate Pattern, we needed a pirate name !
+Joshamee Gibbs is the devoted first mate of Captain Jack Sparrow.  
+Since we are using the Paranoid Pirate Pattern, we needed a pirate name !
 
 <h2 align="center">Contribute</h2>
 
-To contribute, install the package locally, create your own branch, add your code/tests/documentation, and open a PR !
+To contribute, install the package locally, create your own branch, add your code (and tests, and documentation), and open a PR !
 
 ### Pre-commit hooks
 
