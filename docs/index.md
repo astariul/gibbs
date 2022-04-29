@@ -4,7 +4,7 @@
 
 Welcome to the documentation of the `gibbs` package.
 
-`gibbs` is a package that help you scale your ML workers (and pure python code) across machines.
+`gibbs` is a package that help you scale your ML workers (and pure python code) across processes and machines.
 
 ---
 

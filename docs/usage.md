@@ -74,7 +74,7 @@ Great ! We are serving our awesome model !
 
 This code is great, but it does not scale.
 
-Because our model takes 250ms to deal with every request, you can imagine what happen when 10 clients send one request at the same time... One of the client will have to wait 2.5s before receiving a response !
+Because our model takes `250ms` to deal with every request, you can imagine what happen when 10 clients send one request at the same time... One of the client will have to wait `2.5s` before receiving a response !
 
 You can try this out by starting our simple app, and in another terminal, run the following script :
 
