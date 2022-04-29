@@ -523,7 +523,7 @@
 <p>Great ! We are serving our awesome model !</p>
 <h2 id="the-scaling-issue">The scaling issue</h2>
 <p>This code is great, but it does not scale.</p>
-<p>Because our model takes 250ms to deal with every request, you can imagine what happen when 10 clients send one request at the same time... One of the client will have to wait 2.5s before receiving a response !</p>
+<p>Because our model takes <code>250ms</code> to deal with every request, you can imagine what happen when 10 clients send one request at the same time... One of the client will have to wait <code>2.5s</code> before receiving a response !</p>
 <p>You can try this out by starting our simple app, and in another terminal, run the following script :</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">import</span> <span class="nn">time</span>

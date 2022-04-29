@@ -493,11 +493,92 @@
 
 <h1 id="advanced">Advanced</h1>
 <h2 id="changing-the-port-used-by-gibbs">Changing the port used by <code>gibbs</code></h2>
+<p>By default, <code>gibbs</code> uses the port <code>5019</code> for the sockets the communicate.</p>
+<p>You can change this port by using the argument <code>gibbs_port</code> in the Worker constructor, and the argument <code>port</code> in the Hub constructor :</p>
+<div class="highlight"><pre><span></span><code><span class="n">hub</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">6222</span><span class="p">)</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">gibbs_port</span><span class="o">=</span><span class="mi">6222</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="passing-arguments-to-models-constructor">Passing arguments to model's constructor</h2>
+<p>If your model requires arguments for the constructor (like in the example given in the <a href="../usage/">Usage section</a>) :</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MyAwesomeModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">wait_time</span>
+</code></pre></div>
+<p>You can just pass the arguments to the Worker (positional arguments or keyword arguments, both work) :</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># With positional argument</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">MyAwesomeModel</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># With keyword argument</span>
+<span class="n">w2</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">MyAwesomeModel</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p>Only a small list of keywords arguments are reserved for <code>gibbs</code>. Here is the exhaustive list :</p>
+<ul>
+<li><code>gibbs_host</code></li>
+<li><code>gibbs_port</code></li>
+<li><code>gibbs_heartbeat_interval</code></li>
+<li><code>gibbs_reset_after_n_miss</code></li>
+</ul>
 <h2 id="starting-workers-in-another-machine">Starting workers in another machine</h2>
+<p>By default, <code>gibbs</code> workers try to connect to a Hub on the local machine (<code>localhost</code>).</p>
+<p>But you can change this behavior, to have workers running in another machine !</p>
+<p>To do this, simply start your worker with the appropriate host using the <code>gibbs_host</code> argument :</p>
+<div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">gibbs_host</span><span class="o">=</span><span class="s2">&quot;192.178.0.3&quot;</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="retrials-timeouts">Retrials &amp; timeouts</h2>
+<p>By default, the <code>request()</code> method of the Hub will indefinitely waits for a response from the worker.</p>
+<hr />
+<p>If instead you want to have a timeout, you can specify the timeout (in <em>seconds</em>) with the <code>gibbs_timeout</code> argument :</p>
+<div class="highlight"><pre><span></span><code><span class="n">h</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">()</span>
+<span class="k">await</span> <span class="n">h</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</code></pre></div>
+<p>If the Hub doesn't receive any response from the worker within the specified timeout, a <code>asyncio.TimeoutError</code> exception is raised.</p>
+<hr />
+<p>You can also specify a number of retries with the argument <code>gibbs_retries</code> :</p>
+<div class="highlight"><pre><span></span><code><span class="n">h</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">()</span>
+<span class="k">await</span> <span class="n">h</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gibbs_timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gibbs_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p>With this code, the Hub will try to send a request. If the Hub didn't receive an answer within 2 seconds, it will retry the request again, up to 3 times.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You need to specify <code>gibbs_timeout</code> when using <code>gibbs_retries</code>, because there is no timeout by default !</p>
+</div>
+<hr />
+<p>You can also specify <code>gibbs_retries=-1</code> for infinite retries !</p>
 <h2 id="logging">Logging</h2>
+<p>Inside <code>gibbs</code>, the library <a href="https://github.com/Delgan/loguru"><code>loguru</code></a> is used for logging.</p>
+<p>By default, the logger is <strong>disabled</strong> (<a href="https://github.com/Delgan/loguru#suitable-for-scripts-and-libraries">so logging functions become no-op</a>). If you want to see what's going on inside <code>gibbs</code> (for contributing or debugging for example), you can activate it :</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="s2">&quot;gibbs&quot;</span><span class="p">)</span>
+<span class="c1"># From here, logs will be displayed</span>
+</code></pre></div>
+<hr />
+<p>You can also change the level of logs you want, the format, etc...</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="s2">&quot;gibbs&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{level}</span><span class="s2"> </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For more details, check out the <a href="https://github.com/Delgan/loguru"><code>loguru</code> library</a> !</p>
+</div>
 <h2 id="changing-the-heartbeat-interval">Changing the heartbeat interval</h2>
+<p>By default, the heartbeat interval is set to <strong>one second</strong>.</p>
+<p>You can change this value by using the argument <code>gibbs_heartbeat_interval</code> in the Worker constructor, and the argument <code>heartbeat_interval</code> in the Hub constructor :</p>
+<div class="highlight"><pre><span></span><code><span class="n">hub</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">(</span><span class="n">heartbeat_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">gibbs_heartbeat_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure that both the Hub and the workers have the same value for the heartbeat interval, otherwise they might have synchronisation issues !</p>
+</div>
 
               
             </article>
