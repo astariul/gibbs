@@ -119,7 +119,29 @@ pre-commit install
 
 ---
 
-Then you can just try to commit your code. If anything fails (linters, tests, etc...), your code will not be committed. You can just fix your code and try to commit again !
+Then you can just try to commit your code. If you code does not meet the quality required by linters, it will not be committed. You can just fix your code and try to commit again !
+
+---
+
+You can manually run the pre-commit hooks with :
+
+```bash
+pre-commit run --all-files
+```
+
+### Tests
+
+When you contribute, you need to make sure all the unit-tests pass. You should also add tests if necessary !
+
+You can run the tests with :
+
+```bash
+pytest
+```
+
+---
+
+Pre-commit hooks will not run the tests, but it will automatically update the coverage badge !
 
 ### Documentation
 

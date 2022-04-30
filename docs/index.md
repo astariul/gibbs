@@ -66,19 +66,38 @@ List of extra dependencies :
 
 ## Contribute
 
-To contribute, install the package locally (see [Installation](#local-version)), create your own branch, add your code/tests/documentation, and open a PR !
+To contribute, install the package locally (see [Installation](#local-version)), create your own branch, add your code (and tests, and documentation), and open a PR !
 
 ### Pre-commit hooks
 
 Pre-commit hooks are set to check the code added whenever you commit something.
 
-When you try to commit your code, hooks are run, and if anything fails (_linters, etc..._), your code will not be committed. You then have to fix your code and try to commit again !
+When you try to commit your code, hooks are automatically run, and if you code does not meet the quality required by linters, it will not be committed. You then have to fix your code and try to commit again !
 
-!!! info
+!!! important
     If you never ran the hooks before, install it with :
     ```bash
     pre-commit install
     ```
+
+!!! info
+    You can manually run the pre-commit hooks with :
+    ```bash
+    pre-commit run --all-files
+    ```
+
+### Unit-tests
+
+When you contribute, you need to make sure all the unit-tests pass. You should also add tests if necessary !
+
+You can run the tests with :
+
+```bash
+pytest
+```
+
+!!! info
+    Pre-commit hooks will not run the tests, but it will automatically update the coverage badge !
 
 ### Documentation
 
