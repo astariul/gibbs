@@ -24,7 +24,7 @@ extras_require["dev"] = (
 
 setuptools.setup(
     name="gibbs",
-    version="0.2.0.dev0",
+    version="0.3.0.dev0",
     author="Nicolas REMOND",
     author_email="remondnicola@gmail.com",
     description="Scale your ML workers asynchronously across processes and machines",
