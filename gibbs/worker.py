@@ -1,3 +1,4 @@
+import signal
 import traceback
 import uuid
 from multiprocessing import Process
@@ -53,10 +54,12 @@ class Worker(Process):
     ):
         super().__init__()
 
+        # Everything we need to start the worker class
         self.worker_cls = worker_cls
         self.worker_args = args
         self.worker_kwargs = kwargs
 
+        # Everything we need to communicate with the hub
         self.identity = uuid.uuid4().hex
         self.host = gibbs_host
         self.port = gibbs_port
@@ -64,6 +67,18 @@ class Worker(Process):
         self.reset_n_miss = gibbs_reset_after_n_miss
 
         self.waiting_pong = 0
+
+        # For graceful termination
+        context = zmq.Context()
+        self.term_socket = context.socket(zmq.REQ)
+        self.term_port = self.term_socket.bind_to_random_port("tcp://127.0.0.1")
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
+
+    def exit(self, *args, **kwargs):
+        # Send something on the termination socket, it doesn't matter what
+        logger.debug("Sending termination ping...")
+        self.term_socket.send(PING)
 
     def create_socket(self, context: zmq.Context) -> zmq.Socket:
         """Helper method to create a socket, setting its identity and connecting
@@ -103,9 +118,19 @@ class Worker(Process):
         # Instanciate the worker
         worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
 
-        # Create the socket
+        # Create the socket connecting to the hub
         context = zmq.Context()
         socket = self.create_socket(context)
+
+        # Create the socket for termination
+        term_socket = context.socket(zmq.REP)
+        term_socket.connect(f"tcp://localhost:{self.term_port}")
+
+        # Create a poller to manage both sockets at the same time
+        poller = zmq.Poller()
+        poller.register(socket, zmq.POLLIN)
+        poller.register(term_socket, zmq.POLLIN)
+
         logger.info("Worker ready to roll")
 
         # Tell the Hub we are ready
@@ -115,7 +140,13 @@ class Worker(Process):
         # we wait for the next one
         while True:
             logger.debug("Waiting for request...")
-            if socket.poll(self.heartbeat_t * MS, zmq.POLLIN):
+            events = dict(poller.poll(self.heartbeat_t * MS))
+
+            if term_socket in events:
+                logger.debug("Termination signal received, shutting down gracefully")
+                break
+
+            if socket in events:
                 _, workload = socket.recv_multipart(zmq.NOBLOCK)
                 logger.debug("Received something !")
                 self.waiting_pong = 0
@@ -153,3 +184,15 @@ class Worker(Process):
             else:
                 logger.debug("Sending back the response")
                 socket.send_multipart([b"", msgpack.packb([req_id, CODE_SUCCESS, res])])
+
+        logger.info("Worker is shut down")
+        quit()
+
+    def terminate(self):
+        """Method overwriting `Process.terminate()` to gracefully shutdown the process.
+
+        Note:
+            If your process is stuck even when calling `terminate()`, you can kill it with the `kill()` method.
+        """
+        self.exit()
+        self.join()
