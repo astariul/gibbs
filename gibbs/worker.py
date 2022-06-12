@@ -87,6 +87,7 @@ class Worker(Process):
 
     def create_term_socket(self, context: zmq.Context) -> zmq.Socket:
         """Helper method to create a termination socket.
+
         Basically it creates 2 sockets, bind/connect them together. One socket
         will be used to send a termination signal, and the other is returned and
         used to receive the termination signal.
@@ -118,6 +119,20 @@ class Worker(Process):
         return term_rcv_socket
 
     def reset_socket(self, socket: zmq.Socket, context: zmq.Context, poller: zmq.Poller) -> zmq.Socket:
+        """Helper method to reset the given socket.
+
+        This method unregister the socket from the given poller, close the
+        socket, and then recreate the socket and register this new socket in the
+        poller.
+
+        Args:
+            socket (zmq.Socket): ZMQ socket to reset.
+            context (zmq.Context): ZMQ context to use.
+            poller (zmq.Poller): ZMQ poller where the socket is registered.
+
+        Returns:
+            zmq.Socket: Initialized and connected socket, ready to use.
+        """
         # Close the existing socket
         poller.unregister(socket)
         socket.close(linger=0)
