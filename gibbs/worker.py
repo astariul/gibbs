@@ -1,3 +1,4 @@
+import signal
 import traceback
 import uuid
 from multiprocessing import Process
@@ -53,12 +54,10 @@ class Worker(Process):
     ):
         super().__init__()
 
-        # Everything we need to start the worker class
         self.worker_cls = worker_cls
         self.worker_args = args
         self.worker_kwargs = kwargs
 
-        # Everything we need to communicate with the hub
         self.identity = uuid.uuid4().hex
         self.host = gibbs_host
         self.port = gibbs_port
@@ -66,11 +65,6 @@ class Worker(Process):
         self.reset_n_miss = gibbs_reset_after_n_miss
 
         self.waiting_pong = 0
-
-        # For graceful termination
-        context = zmq.Context()
-        self.term_socket = context.socket(zmq.REQ)
-        self.term_port = self.term_socket.bind_to_random_port("tcp://127.0.0.1")
 
     def exit(self, *args, **kwargs):
         # Send something on the termination socket, it doesn't matter what
@@ -95,6 +89,32 @@ class Worker(Process):
         socket.connect(f"tcp://{self.host}:{self.port}")
 
         return socket
+
+    def create_term_socket(self, context: zmq.Context) -> zmq.Socket:
+        """Helper method to create a termination socket.
+        Basically it creates 2 sockets, bind/connect them together. One socket
+        will be used to send a termination signal, and the other is returned and
+        used to receive the termination signal.
+
+        Args:
+            context (zmq.Context): ZMQ context to use.
+
+        Returns:
+            zmq.Socket: Initialized and connected socket, ready to use.
+        """
+        # Create the socket than will send the termination signal
+        self.term_socket = context.socket(zmq.REQ)
+        term_port = self.term_socket.bind_to_random_port("tcp://127.0.0.1")
+
+        # When we receive these signal, exit !
+        signal.signal(signal.SIGTERM, self.exit)
+        signal.signal(signal.SIGINT, self.exit)
+
+        # And finally create the socket that we will use to receive the termination signal
+        term_socket = context.socket(zmq.REP)
+        term_socket.connect(f"tcp://localhost:{term_port}")
+
+        return term_socket
 
     def reset_socket(self, socket: zmq.Socket, context: zmq.Context, poller: zmq.Poller) -> zmq.Socket:
         # Close the existing socket
@@ -131,8 +151,7 @@ class Worker(Process):
         poller = zmq.Poller()
 
         # Create the socket for termination
-        term_socket = context.socket(zmq.REP)
-        term_socket.connect(f"tcp://localhost:{self.term_port}")
+        term_socket = self.create_term_socket(context)
         poller.register(term_socket, zmq.POLLIN)
 
         # Create the socket connecting to the hub
@@ -194,12 +213,3 @@ class Worker(Process):
 
         logger.info("Worker is shut down")
         quit()
-
-    def terminate(self):
-        """Method overwriting `Process.terminate()` to gracefully shutdown the process.
-
-        Note:
-            If your process is stuck even when calling `terminate()`, you can kill it with the `kill()` method.
-        """
-        self.exit()
-        self.join()
