@@ -66,11 +66,6 @@ class Worker(Process):
 
         self.waiting_pong = 0
 
-    def exit(self, *args, **kwargs):
-        # Send something on the termination socket, it doesn't matter what
-        logger.debug("Sending termination ping...")
-        self.term_socket.send(PING)
-
     def create_socket(self, context: zmq.Context) -> zmq.Socket:
         """Helper method to create a socket, setting its identity and connecting
         to the Hub.
@@ -102,19 +97,25 @@ class Worker(Process):
         Returns:
             zmq.Socket: Initialized and connected socket, ready to use.
         """
-        # Create the socket than will send the termination signal
-        self.term_socket = context.socket(zmq.REQ)
-        term_port = self.term_socket.bind_to_random_port("tcp://127.0.0.1")
+        # Create the socket than will send the termination ping
+        term_snd_socket = context.socket(zmq.REQ)
+        port = term_snd_socket.bind_to_random_port("tcp://127.0.0.1")
 
-        # When we receive these signal, exit !
-        signal.signal(signal.SIGTERM, self.exit)
-        signal.signal(signal.SIGINT, self.exit)
+        # Then define the behavior on how to send the termination ping
+        def send_term(*args, **kwargs):
+            logger.debug("Sending termination ping...")
+            # Send something on the termination socket, it doesn't matter what
+            term_snd_socket.send(PING)
+
+        # We send the termination ping upon receiving these signals
+        signal.signal(signal.SIGTERM, send_term)
+        signal.signal(signal.SIGINT, send_term)
 
         # And finally create the socket that we will use to receive the termination signal
-        term_socket = context.socket(zmq.REP)
-        term_socket.connect(f"tcp://localhost:{term_port}")
+        term_rcv_socket = context.socket(zmq.REP)
+        term_rcv_socket.connect(f"tcp://localhost:{port}")
 
-        return term_socket
+        return term_rcv_socket
 
     def reset_socket(self, socket: zmq.Socket, context: zmq.Context, poller: zmq.Poller) -> zmq.Socket:
         # Close the existing socket
