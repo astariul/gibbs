@@ -1,3 +1,4 @@
+import signal
 import traceback
 import uuid
 from multiprocessing import Process
@@ -84,6 +85,64 @@ class Worker(Process):
 
         return socket
 
+    def create_term_socket(self, context: zmq.Context) -> zmq.Socket:
+        """Helper method to create a termination socket.
+
+        Basically it creates 2 sockets, bind/connect them together. One socket
+        will be used to send a termination signal, and the other is returned and
+        used to receive the termination signal.
+
+        Args:
+            context (zmq.Context): ZMQ context to use.
+
+        Returns:
+            zmq.Socket: Initialized and connected socket, ready to use.
+        """
+        # Create the socket than will send the termination ping
+        term_snd_socket = context.socket(zmq.REQ)
+        port = term_snd_socket.bind_to_random_port("tcp://127.0.0.1")
+
+        # Then define the behavior on how to send the termination ping
+        def send_term(*args, **kwargs):
+            logger.debug("Sending termination ping...")
+            # Send something on the termination socket, it doesn't matter what
+            term_snd_socket.send(PING)
+
+        # We send the termination ping upon receiving these signals
+        signal.signal(signal.SIGTERM, send_term)
+        signal.signal(signal.SIGINT, send_term)
+
+        # And finally create the socket that we will use to receive the termination signal
+        term_rcv_socket = context.socket(zmq.REP)
+        term_rcv_socket.connect(f"tcp://localhost:{port}")
+
+        return term_rcv_socket
+
+    def reset_socket(self, socket: zmq.Socket, context: zmq.Context, poller: zmq.Poller) -> zmq.Socket:
+        """Helper method to reset the given socket.
+
+        This method unregister the socket from the given poller, close the
+        socket, and then recreate the socket and register this new socket in the
+        poller.
+
+        Args:
+            socket (zmq.Socket): ZMQ socket to reset.
+            context (zmq.Context): ZMQ context to use.
+            poller (zmq.Poller): ZMQ poller where the socket is registered.
+
+        Returns:
+            zmq.Socket: Initialized and connected socket, ready to use.
+        """
+        # Close the existing socket
+        poller.unregister(socket)
+        socket.close(linger=0)
+
+        # Recreate the socket
+        socket = self.create_socket(context)
+        poller.register(socket, zmq.POLLIN)
+
+        return socket
+
     def ping(self, socket: zmq.Socket):
         """Helper method used for the heartbeat. Also takes care of keeping the
         counter of heartbeats up-to-date.
@@ -103,9 +162,18 @@ class Worker(Process):
         # Instanciate the worker
         worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
 
-        # Create the socket
+        # Initialize what we need for handling sockets
         context = zmq.Context()
+        poller = zmq.Poller()
+
+        # Create the socket for termination
+        term_socket = self.create_term_socket(context)
+        poller.register(term_socket, zmq.POLLIN)
+
+        # Create the socket connecting to the hub
         socket = self.create_socket(context)
+        poller.register(socket, zmq.POLLIN)
+
         logger.info("Worker ready to roll")
 
         # Tell the Hub we are ready
@@ -115,7 +183,13 @@ class Worker(Process):
         # we wait for the next one
         while True:
             logger.debug("Waiting for request...")
-            if socket.poll(self.heartbeat_t * MS, zmq.POLLIN):
+            events = dict(poller.poll(self.heartbeat_t * MS))
+
+            if term_socket in events:
+                logger.debug("Termination signal received, shutting down gracefully")
+                break
+
+            if socket in events:
                 _, workload = socket.recv_multipart(zmq.NOBLOCK)
                 logger.debug("Received something !")
                 self.waiting_pong = 0
@@ -127,8 +201,7 @@ class Worker(Process):
                         f"The Hub is not answering, even after {self.waiting_pong} missed pings... "
                         f"Resetting the socket"
                     )
-                    socket.close(linger=0)
-                    socket = self.create_socket(context)
+                    socket = self.reset_socket(socket=socket, context=context, poller=poller)
                     self.waiting_pong = 0
 
                 # We didn't receive anything for some time, try to ping again
@@ -153,3 +226,6 @@ class Worker(Process):
             else:
                 logger.debug("Sending back the response")
                 socket.send_multipart([b"", msgpack.packb([req_id, CODE_SUCCESS, res])])
+
+        logger.info("Worker is shut down")
+        quit()

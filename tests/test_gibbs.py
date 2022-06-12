@@ -258,7 +258,7 @@ async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
     assert res == 16
 
     # Simulate a worker crash
-    w.terminate()
+    w.kill()
 
     # Wait a bit : without heartbeat, the hub knows this worker is dead
     await asyncio.sleep(0.15)
@@ -298,7 +298,7 @@ async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
     # Recreate a brand new hub, the worker will automatically try to reconnect
     h2 = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
 
-    # Send a request to sure the worker is fine
+    # Send a request to make sure the worker is fine
     res = await h2.request(5)
     assert res == 25
 
@@ -326,7 +326,7 @@ async def test_worker_crash_but_request_is_automatically_retried(unused_tcp_port
     assert 1 in res and 2 in res
 
     # Simulate a crash in one of the worker
-    workers[0].terminate()
+    workers[0].kill()
 
     # Send another request directly after the crash
     # The Hub received a heartbeat recently so he thinks the worker is alive
