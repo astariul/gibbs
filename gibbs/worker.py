@@ -1,4 +1,3 @@
-import signal
 import traceback
 import uuid
 from multiprocessing import Process
@@ -72,8 +71,6 @@ class Worker(Process):
         context = zmq.Context()
         self.term_socket = context.socket(zmq.REQ)
         self.term_port = self.term_socket.bind_to_random_port("tcp://127.0.0.1")
-        signal.signal(signal.SIGINT, self.exit)
-        signal.signal(signal.SIGTERM, self.exit)
 
     def exit(self, *args, **kwargs):
         # Send something on the termination socket, it doesn't matter what
@@ -99,6 +96,17 @@ class Worker(Process):
 
         return socket
 
+    def reset_socket(self, socket: zmq.Socket, context: zmq.Context, poller: zmq.Poller) -> zmq.Socket:
+        # Close the existing socket
+        poller.unregister(socket)
+        socket.close(linger=0)
+
+        # Recreate the socket
+        socket = self.create_socket(context)
+        poller.register(socket, zmq.POLLIN)
+
+        return socket
+
     def ping(self, socket: zmq.Socket):
         """Helper method used for the heartbeat. Also takes care of keeping the
         counter of heartbeats up-to-date.
@@ -118,18 +126,18 @@ class Worker(Process):
         # Instanciate the worker
         worker = self.worker_cls(*self.worker_args, **self.worker_kwargs)
 
-        # Create the socket connecting to the hub
+        # Initialize what we need for handling sockets
         context = zmq.Context()
-        socket = self.create_socket(context)
+        poller = zmq.Poller()
 
         # Create the socket for termination
         term_socket = context.socket(zmq.REP)
         term_socket.connect(f"tcp://localhost:{self.term_port}")
-
-        # Create a poller to manage both sockets at the same time
-        poller = zmq.Poller()
-        poller.register(socket, zmq.POLLIN)
         poller.register(term_socket, zmq.POLLIN)
+
+        # Create the socket connecting to the hub
+        socket = self.create_socket(context)
+        poller.register(socket, zmq.POLLIN)
 
         logger.info("Worker ready to roll")
 
@@ -158,8 +166,7 @@ class Worker(Process):
                         f"The Hub is not answering, even after {self.waiting_pong} missed pings... "
                         f"Resetting the socket"
                     )
-                    socket.close(linger=0)
-                    socket = self.create_socket(context)
+                    socket = self.reset_socket(socket=socket, context=context, poller=poller)
                     self.waiting_pong = 0
 
                 # We didn't receive anything for some time, try to ping again
