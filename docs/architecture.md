@@ -64,3 +64,18 @@ If the Hub didn't receive a heartbeat from some time, we know this worker is dea
 
 !!! warning
     There is a small time interval where a worker can die and the Hub still thinks it's alive. If a request is sent in this interval, the request will fail. To solve this, you can check the [section about automatic retrials](advanced.md#retrials-timeouts).
+
+## Graceful termination
+
+In `gibbs`, the workers terminate cleanly when interrupted with a `CTRL-C` or another signal such as `SIGTERM`. By default, these signals simply kill the process, but in our case this is detrimental : if the worker took a request, we want this request to be _fully_ treated, otherwise it is lost.
+
+If a worker took a request and then receive a signal to shut down, it will first process the request and send back the response before shutting down.
+
+!!! tip
+    If you don't want your worker to end gracefully, you can always send a `SIGKILL`.
+
+To have this feature, the workers uses another socket internally, and uses polling to get whatever comes first (request or termination signal) :
+
+![](img/gibbs_graceful.png)
+
+So if a request comes first, the worker will first deal with the request before dealing with the termination signal (shutting down).
