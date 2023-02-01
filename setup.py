@@ -14,7 +14,7 @@ extras_require = {
     "test": ["pytest~=7.0", "pytest-asyncio~=0.18", "pytest-cov~=3.0", "coverage-badge~=1.0"],
     "hook": ["pre-commit~=2.15"],
     "lint": ["isort~=5.9", "black~=22.1", "flake518~=1.2", "darglint~=1.8"],
-    "docs": ["mkdocs-material~=8.1", "mkdocstrings[python]~=0.18", "mike~=1.1"],
+    "docs": ["mkdocs-material~=9.0", "mkdocstrings[python]~=0.18", "mike~=1.1"],
     "ex": ["fastapi~=0.75", "uvicorn~=0.17", "requests~=2.27", "transformers~=4.17"],
 }
 extras_require["all"] = sum(extras_require.values(), [])
