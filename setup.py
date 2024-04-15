@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 reqs = [
-    "pyzmq>=22.3,<26.0",
+    "pyzmq>=22.3,<27.0",
     "msgpack~=1.0",
     "loguru~=0.6",
 ]
