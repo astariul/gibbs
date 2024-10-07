@@ -12,7 +12,7 @@ reqs = [
 
 extras_require = {
     "test": ["pytest~=8.0", "pytest-asyncio~=0.18", "pytest-cov~=3.0", "coverage-badge~=1.0"],
-    "hook": ["pre-commit~=3.0"],
+    "hook": ["pre-commit>=3,<5"],
     "lint": ["isort~=5.9", "black~=24.1", "flake518~=1.2", "darglint~=1.8"],
     "docs": ["mkdocs-material~=9.0", "mkdocstrings[python]~=0.18", "mike~=2.0"],
     "ex": ["fastapi~=0.75", "uvicorn~=0.17", "requests~=2.27", "transformers~=4.17"],
