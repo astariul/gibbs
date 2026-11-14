@@ -4,7 +4,7 @@ from collections import Counter
 
 import pytest
 
-from gibbs import Hub, UserCodeException, Worker
+from pintel import Hub, UserCodeException, Worker
 
 
 COMPUTATION_TIME = 0.1
@@ -34,7 +34,7 @@ class TWorker:
 
 async def test_hub_worker_communication(unused_tcp_port):
     # Just start 1 worker and 1 hub and ensure they can properly communicate
-    w = Worker(TWorker, 1, 2, key_1=3, key_2=4, gibbs_port=unused_tcp_port)
+    w = Worker(TWorker, 1, 2, key_1=3, key_2=4, pintel_port=unused_tcp_port)
     w.start()
 
     h = Hub(port=unused_tcp_port)
@@ -53,7 +53,7 @@ async def test_hub_worker_communication(unused_tcp_port):
 
 async def test_parallel_worker(unused_tcp_port):
     # Start 2 worker and ensure they compute in parallel
-    workers = [Worker(TWorker, 1, 2, key_1=3, key_2=4, wait=True, gibbs_port=unused_tcp_port) for _ in range(2)]
+    workers = [Worker(TWorker, 1, 2, key_1=3, key_2=4, wait=True, pintel_port=unused_tcp_port) for _ in range(2)]
     for w in workers:
         w.start()
 
@@ -106,7 +106,7 @@ class TWorkerSlow:
 
 async def test_overload_response_buffer_fast(unused_tcp_port):
     # Starts 3 workers
-    workers = [Worker(TWorkerSlow, gibbs_port=unused_tcp_port) for _ in range(3)]
+    workers = [Worker(TWorkerSlow, pintel_port=unused_tcp_port) for _ in range(3)]
     for w in workers:
         w.start()
 
@@ -128,7 +128,7 @@ async def test_overload_response_buffer_fast(unused_tcp_port):
 
 async def test_overload_response_buffer_slow(unused_tcp_port):
     # Starts 3 workers
-    workers = [Worker(TWorkerSlow, gibbs_port=unused_tcp_port) for _ in range(3)]
+    workers = [Worker(TWorkerSlow, pintel_port=unused_tcp_port) for _ in range(3)]
     for w in workers:
         w.start()
 
@@ -179,7 +179,7 @@ def test_user_defined_code_crash_in_init():
 
 
 async def test_user_defined_code_crash_in_call(unused_tcp_port):
-    w = Worker(TWorkerCrash, in_call=True, gibbs_port=unused_tcp_port)
+    w = Worker(TWorkerCrash, in_call=True, pintel_port=unused_tcp_port)
     w.start()
 
     h = Hub(port=unused_tcp_port)
@@ -202,7 +202,7 @@ class TWorkerId:
 
 
 async def test_workers_roll(unused_tcp_port):
-    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port) for i in range(2)]
+    workers = [Worker(TWorkerId, i=i + 1, pintel_port=unused_tcp_port) for i in range(2)]
     for w in workers:
         w.start()
 
@@ -219,7 +219,7 @@ async def test_workers_roll(unused_tcp_port):
 
 
 async def test_worker_crash_but_next_request_is_correctly_send_to_alive_worker(unused_tcp_port):
-    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1) for i in range(2)]
+    workers = [Worker(TWorkerId, i=i + 1, pintel_port=unused_tcp_port, pintel_heartbeat_interval=0.1) for i in range(2)]
     for w in workers:
         w.start()
 
@@ -248,7 +248,7 @@ class TWorkerFast:
 
 
 async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
-    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1)
+    w = Worker(TWorkerFast, pintel_port=unused_tcp_port, pintel_heartbeat_interval=0.1)
     w.start()
 
     h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
@@ -269,7 +269,7 @@ async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
     assert req in pending
 
     # Restart a worker
-    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port)
+    w = Worker(TWorkerFast, pintel_port=unused_tcp_port)
     w.start()
 
     # Since we have a worker, the request was processed
@@ -280,7 +280,7 @@ async def test_worker_crash_and_can_reconnect_without_problem(unused_tcp_port):
 
 
 async def test_hub_crash_but_worker_automatically_reconnect(unused_tcp_port):
-    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port, gibbs_heartbeat_interval=0.1, gibbs_reset_after_n_miss=1)
+    w = Worker(TWorkerFast, pintel_port=unused_tcp_port, pintel_heartbeat_interval=0.1, pintel_reset_after_n_miss=1)
     w.start()
 
     h = Hub(port=unused_tcp_port, heartbeat_interval=0.1)
@@ -311,11 +311,11 @@ async def test_request_timeout(unused_tcp_port):
 
     # Sending a request with a timeout will lead to TimeoutError
     with pytest.raises(asyncio.TimeoutError):
-        await h.request(2, gibbs_timeout=0.1)
+        await h.request(2, pintel_timeout=0.1)
 
 
 async def test_worker_crash_but_request_is_automatically_retried(unused_tcp_port):
-    workers = [Worker(TWorkerId, i=i + 1, gibbs_port=unused_tcp_port) for i in range(2)]
+    workers = [Worker(TWorkerId, i=i + 1, pintel_port=unused_tcp_port) for i in range(2)]
     for w in workers:
         w.start()
 
@@ -331,7 +331,7 @@ async def test_worker_crash_but_request_is_automatically_retried(unused_tcp_port
     # Send another request directly after the crash
     # The Hub received a heartbeat recently so he thinks the worker is alive
     # But we set retries to 1, so the Hub will retry until a worker alive process it
-    res = await asyncio.gather(*[h.request(1, gibbs_timeout=0.2, gibbs_retries=1) for _ in range(2)])
+    res = await asyncio.gather(*[h.request(1, pintel_timeout=0.2, pintel_retries=1) for _ in range(2)])
 
     # Both requests are processed by the left alive worker
     assert res == [2, 2]
@@ -345,12 +345,12 @@ async def test_request_infinite_retry(unused_tcp_port):
 
     # Fire a request with a short timeout
     # No one will answer but we keep retrying indefinitely
-    req = asyncio.create_task(h.request(3, gibbs_timeout=0.05, gibbs_retries=-1))
+    req = asyncio.create_task(h.request(3, pintel_timeout=0.05, pintel_retries=-1))
     done, pending = await asyncio.wait([req], timeout=0.1)
     assert req in pending
 
     # Start a worker
-    w = Worker(TWorkerFast, gibbs_port=unused_tcp_port)
+    w = Worker(TWorkerFast, pintel_port=unused_tcp_port)
     w.start()
 
     # Since we have a worker, the request was processed

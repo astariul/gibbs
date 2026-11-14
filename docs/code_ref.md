@@ -2,7 +2,7 @@
 
 ## API
 
-::: gibbs.hub
+::: pintel.hub
     selection:
       members: Hub
     rendering:
@@ -10,7 +10,7 @@
       show_root_toc_entry: False
       heading_level: 3
 
-::: gibbs.worker
+::: pintel.worker
     selection:
       members: Worker
     rendering:
@@ -20,7 +20,7 @@
 
 ## Internal
 
-::: gibbs.hub
+::: pintel.hub
     selection:
       filters: ["!Response", "!Hub"]
     rendering:
@@ -30,7 +30,7 @@
 
 ## Constants
 
-::: gibbs.hub
+::: pintel.hub
     selection:
       filters:
       - "!.*"
@@ -43,7 +43,7 @@
       heading_level: 3
 
 
-::: gibbs.worker
+::: pintel.worker
     selection:
       filters:
       - "!.*"

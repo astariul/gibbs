@@ -33,11 +33,11 @@ class Worker(Process):
     Args:
         worker_cls (Callable): Worker class containing the code that will be used
             to process requests.
-        gibbs_host (str): Host of the Hub. Defaults to "localhost".
-        gibbs_port (int): Port of the Hub. Defaults to DEFAULT_PORT.
-        gibbs_heartbeat_interval (float): Heartbeat interval between the
+        pintel_host (str): Host of the Hub. Defaults to "localhost".
+        pintel_port (int): Port of the Hub. Defaults to DEFAULT_PORT.
+        pintel_heartbeat_interval (float): Heartbeat interval between the
             worker and the Hub. Defaults to DEFAULT_HEARTBEAT_INTERVAL.
-        gibbs_reset_after_n_miss (int): Number of missed heartbeats
+        pintel_reset_after_n_miss (int): Number of missed heartbeats
             allowed before hard-resetting the socket and retrying. Defaults to
             DEFAULT_RESET_AFTER_N_MISS.
     """
@@ -46,10 +46,10 @@ class Worker(Process):
         self,
         worker_cls: Callable,
         *args: Any,
-        gibbs_host: str = "localhost",
-        gibbs_port: int = DEFAULT_PORT,
-        gibbs_heartbeat_interval: float = DEFAULT_HEARTBEAT_INTERVAL,
-        gibbs_reset_after_n_miss: int = DEFAULT_RESET_AFTER_N_MISS,
+        pintel_host: str = "localhost",
+        pintel_port: int = DEFAULT_PORT,
+        pintel_heartbeat_interval: float = DEFAULT_HEARTBEAT_INTERVAL,
+        pintel_reset_after_n_miss: int = DEFAULT_RESET_AFTER_N_MISS,
         **kwargs: Any,
     ):
         super().__init__()
@@ -59,10 +59,10 @@ class Worker(Process):
         self.worker_kwargs = kwargs
 
         self.identity = uuid.uuid4().hex
-        self.host = gibbs_host
-        self.port = gibbs_port
-        self.heartbeat_t = gibbs_heartbeat_interval
-        self.reset_n_miss = gibbs_reset_after_n_miss
+        self.host = pintel_host
+        self.port = pintel_port
+        self.heartbeat_t = pintel_heartbeat_interval
+        self.reset_n_miss = pintel_reset_after_n_miss
 
         self.waiting_pong = 0
 

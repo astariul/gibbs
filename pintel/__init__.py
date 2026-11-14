@@ -4,4 +4,4 @@ from .hub import Hub, UserCodeException
 from .worker import Worker
 
 
-logger.disable("gibbs")
+logger.disable("pintel")

@@ -1,6 +1,6 @@
-site_name: Gibbs
-repo_url: "https://github.com/astariul/gibbs"
-repo_name: "astariul/gibbs"
+site_name: Pintel
+repo_url: "https://github.com/astariul/pintel"
+repo_name: "astariul/pintel"
 
 theme:
   name: material

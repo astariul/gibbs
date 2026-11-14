@@ -3,11 +3,11 @@
 Let's walk-through an example of how to scale a FastAPI application together !
 
 !!! note
-    Here we use FastAPI to show how easy it is to integrate `gibbs` in an asynchronous framework, but `gibbs` can be used like any asynchronous python code !
+    Here we use FastAPI to show how easy it is to integrate `pintel` in an asynchronous framework, but `pintel` can be used like any asynchronous python code !
 
 ## Initial application
 
-Let's take a simple example to see how we can scale with `gibbs`.
+Let's take a simple example to see how we can scale with `pintel`.
 
 ---
 
@@ -109,7 +109,7 @@ This script simply run 10 requests in parallel and print the time necessary to c
 
 > It tooks 2.532s to process 10 requests
 
-## How `gibbs` works
+## How `pintel` works
 
 What we want is simply to have pool of several models, and when one model is busy dealing with a request, instead of waiting for it to finish, we want to call another (idle) model.
 
@@ -117,7 +117,7 @@ So we can deal with several requests in parallel, and therefore serve several cl
 
 ---
 
-To achieve this, `gibbs` introduces 2 classes :
+To achieve this, `pintel` introduces 2 classes :
 
 * `Hub`
 * `Worker`
@@ -129,7 +129,7 @@ The `Hub` is the class that orchestrate the requests, sending each request to th
 !!! hint
     You can see a more detailed description of how this work in [Architecture](architecture.md)
 
-## Use `gibbs` to scale up
+## Use `pintel` to scale up
 
 Let's see how to modify our simple app to scale up.
 
@@ -141,7 +141,7 @@ import time
 import uvicorn
 from fastapi import FastAPI
 
-from gibbs import Hub, Worker
+from pintel import Hub, Worker
 
 
 class MyAwesomeModel:

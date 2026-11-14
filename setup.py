@@ -23,14 +23,14 @@ extras_require["dev"] = (
 )
 
 setuptools.setup(
-    name="gibbs",
+    name="pintel",
     version="0.3.0.dev0",
     author="Nicolas REMOND",
     author_email="remondnicola@gmail.com",
     description="Scale your ML workers asynchronously across processes and machines",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/astariul/gibbs",
+    url="https://github.com/astariul/pintel",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3.8",

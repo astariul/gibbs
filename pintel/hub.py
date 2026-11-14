@@ -9,7 +9,7 @@ import zmq
 import zmq.asyncio
 from loguru import logger
 
-from gibbs.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT, PONG
+from pintel.worker import CODE_FAILURE, DEFAULT_HEARTBEAT_INTERVAL, DEFAULT_PORT, PONG
 
 
 RESPONSE_BUFFER_SIZE: int = 4096
@@ -274,7 +274,7 @@ class Hub:
         else:
             return res
 
-    async def request(self, *args: Any, gibbs_timeout: float = None, gibbs_retries: int = 0, **kwargs: Any) -> Any:
+    async def request(self, *args: Any, pintel_timeout: float = None, pintel_retries: int = 0, **kwargs: Any) -> Any:
         """Main method, used to send a request to workers and get the result.
 
         This method is a wrapper around `_request`, providing additional
@@ -284,11 +284,11 @@ class Hub:
 
         Args:
             *args: Positional arguments for the request.
-            gibbs_timeout (float): Timeout for the request, in seconds.
+            pintel_timeout (float): Timeout for the request, in seconds.
                 If `None` is given, block until the request is complete.
                 Defaults to None.
-            gibbs_retries (int): Number of retries. This argument is
-                used only if `gibbs_timeout` is not `None`. If `-1` is given,
+            pintel_retries (int): Number of retries. This argument is
+                used only if `pintel_timeout` is not `None`. If `-1` is given,
                 indefinitely retry. Defaults to 0.
             **kwargs: Keywords arguments for the request.
 
@@ -300,17 +300,17 @@ class Hub:
             Any: The response for the request.
         """
         try:
-            return await asyncio.wait_for(self._request(*args, **kwargs), timeout=gibbs_timeout)
+            return await asyncio.wait_for(self._request(*args, **kwargs), timeout=pintel_timeout)
         except asyncio.TimeoutError:
-            if gibbs_retries == 0:
-                logger.error(f"Request failed : no response received within {gibbs_timeout}s")
+            if pintel_retries == 0:
+                logger.error(f"Request failed : no response received within {pintel_timeout}s")
                 raise
             else:
-                retries_left = max(gibbs_retries - 1, -1)
+                retries_left = max(pintel_retries - 1, -1)
                 logger.warning(
-                    f"Request failed : no response received within {gibbs_timeout}s. Retrying {retries_left} times"
+                    f"Request failed : no response received within {pintel_timeout}s. Retrying {retries_left} times"
                 )
-                return await self.request(*args, gibbs_timeout=gibbs_timeout, gibbs_retries=retries_left, **kwargs)
+                return await self.request(*args, pintel_timeout=pintel_timeout, pintel_retries=retries_left, **kwargs)
 
     def __del__(self):
         if self.socket is not None:
