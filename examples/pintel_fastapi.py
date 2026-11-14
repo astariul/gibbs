@@ -5,7 +5,7 @@ import requests
 import uvicorn
 from fastapi import FastAPI
 
-from gibbs import Hub, Worker
+from pintel import Hub, Worker
 
 
 PORT = 8000

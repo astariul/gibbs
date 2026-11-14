@@ -1,14 +1,14 @@
-# Gibbs
+# Pintel
 
 ## Introduction
 
-Welcome to the documentation of the `gibbs` package.
+Welcome to the documentation of the `pintel` package.
 
-`gibbs` is a package that help you scale your ML workers (or any python code) across processes and machines, asynchronously.
+`pintel` is a package that help you scale your ML workers (or any python code) across processes and machines, asynchronously.
 
 ---
 
-`gibbs` is :
+`pintel` is :
 
 * ⚡️ Highly performant
 * 🔀 Asynchronous
@@ -21,7 +21,7 @@ Welcome to the documentation of the `gibbs` package.
 You can install the latest stable version of the package directly from PyPi with :
 
 ```bash
-pip install gibbs
+pip install pintel
 ```
 
 ### Bleeding-edge version
@@ -29,7 +29,7 @@ pip install gibbs
 To install the bleeding-edge version (`main`, not released), you can do :
 
 ```bash
-pip install git+https://github.com/astariul/gibbs.git
+pip install git+https://github.com/astariul/pintel.git
 ```
 
 ### Local version
@@ -37,8 +37,8 @@ pip install git+https://github.com/astariul/gibbs.git
 For development purposes, you can clone the repository locally and install it manually :
 
 ```bash
-git clone https://github.com/astariul/gibbs.git
-cd gibbs
+git clone https://github.com/astariul/pintel.git
+cd pintel
 pip install -e .
 ```
 
@@ -47,7 +47,7 @@ pip install -e .
 You can also install extras dependencies, for example :
 
 ```bash
-pip install gibbs[docs]
+pip install pintel[docs]
 ```
 
 Will install necessary dependencies for building the docs.

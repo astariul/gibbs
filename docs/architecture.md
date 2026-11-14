@@ -1,17 +1,17 @@
 # Architecture
 
 !!! warning
-    This page contains advanced technical details about `gibbs`. You can probably skip it if you just want to use the library.
+    This page contains advanced technical details about `pintel`. You can probably skip it if you just want to use the library.
 
 ## Tooling
 
-`gibbs` relies on the `zmq` library for communication between the hub and the workers.
+`pintel` relies on the `zmq` library for communication between the hub and the workers.
 
 `zmq` is a low-level networking library, providing us with TCP sockets. This gives us performances, and the ability to have workers on different machines.
 
 ## Pattern
 
-`gibbs` implement a modified version of the ***Paranoid Pirate Pattern***.
+`pintel` implement a modified version of the ***Paranoid Pirate Pattern***.
 
 You can read more about the Paranoid Pirate Pattern in the [zmq guide](https://zguide.zeromq.org/docs/chapter4/#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern). But basically :
 
@@ -21,9 +21,9 @@ You can read more about the Paranoid Pirate Pattern in the [zmq guide](https://z
 
 ---
 
-Here is a schema for the Paranoid Pirate Pattern implemented in `gibbs` :
+Here is a schema for the Paranoid Pirate Pattern implemented in `pintel` :
 
-![](img/gibbs_base.png)
+![](img/pintel_base.png)
 
 !!! tip
     As you can see the the original Paranoid Pirate Pattern is slightly modified : the clients and the queue are merged into a single component, called "Hub".
@@ -32,7 +32,7 @@ Here is a schema for the Paranoid Pirate Pattern implemented in `gibbs` :
 
 Let's see how these components interact with each other to deal with parallel requests :
 
-![](img/gibbs_parallel.png)
+![](img/pintel_parallel.png)
 
 The Hub simply keeps a list of workers that are ready, and send incoming requests to one of the ready worker.
 
@@ -45,7 +45,7 @@ When receiving the response from the worker, the Hub marks it as ready again.
 
 In the [zmq guide](https://zguide.zeromq.org/docs/chapter4/#Heartbeating-for-Paranoid-Pirate), the Paranoid Pirate Pattern implements a _One-way heartbeat_.
 
-In `gibbs` though, the heartbeat is implemented as a _Ping-pong heartbeat_.
+In `pintel` though, the heartbeat is implemented as a _Ping-pong heartbeat_.
 
 !!! question
     Heartbeat is necessary to have _robustness_, in case of workers or Hub crash.
@@ -54,7 +54,7 @@ In `gibbs` though, the heartbeat is implemented as a _Ping-pong heartbeat_.
 
 Here is how heartbeat works :
 
-![](img/gibbs_heartbeat.png)
+![](img/pintel_heartbeat.png)
 
 The workers always initiate the heartbeat (_ping_), and the hub answer it (_pong_).
 
@@ -67,7 +67,7 @@ If the Hub didn't receive a heartbeat from some time, we know this worker is dea
 
 ## Graceful termination
 
-In `gibbs`, the workers terminate cleanly when interrupted with a `CTRL-C` or another signal such as `SIGTERM`. By default, these signals simply kill the process, but in our case this is detrimental : if the worker took a request, we want this request to be _fully_ treated, otherwise it is lost.
+In `pintel`, the workers terminate cleanly when interrupted with a `CTRL-C` or another signal such as `SIGTERM`. By default, these signals simply kill the process, but in our case this is detrimental : if the worker took a request, we want this request to be _fully_ treated, otherwise it is lost.
 
 If a worker took a request and then receive a signal to shut down, it will first process the request and send back the response before shutting down.
 
@@ -76,6 +76,6 @@ If a worker took a request and then receive a signal to shut down, it will first
 
 To have this feature, the workers uses another socket internally, and uses polling to get whatever comes first (request or termination signal) :
 
-![](img/gibbs_graceful.png)
+![](img/pintel_graceful.png)
 
 So if a request comes first, the worker will first deal with the request before dealing with the termination signal (shutting down).

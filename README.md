@@ -1,15 +1,15 @@
-<h1 align="center">gibbs</h1>
+<h1 align="center">pintel</h1>
 <p align="center">
 Scale your ML workers asynchronously across processes and machines
 </p>
 
 <p align="center">
-    <a href="https://github.com/astariul/gibbs/releases"><img src="https://img.shields.io/github/release/astariul/gibbs.svg" alt="GitHub release" /></a>
-    <a href="https://github.com/astariul/gibbs/actions/workflows/pytest.yaml"><img src="https://github.com/astariul/gibbs/actions/workflows/pytest.yaml/badge.svg" alt="Test status" /></a>
-    <a href="https://github.com/astariul/gibbs/actions/workflows/lint.yaml"><img src="https://github.com/astariul/gibbs/actions/workflows/lint.yaml/badge.svg" alt="Lint status" /></a>
+    <a href="https://github.com/astariul/pintel/releases"><img src="https://img.shields.io/github/release/astariul/pintel.svg" alt="GitHub release" /></a>
+    <a href="https://github.com/astariul/pintel/actions/workflows/pytest.yaml"><img src="https://github.com/astariul/pintel/actions/workflows/pytest.yaml/badge.svg" alt="Test status" /></a>
+    <a href="https://github.com/astariul/pintel/actions/workflows/lint.yaml"><img src="https://github.com/astariul/pintel/actions/workflows/lint.yaml/badge.svg" alt="Lint status" /></a>
     <img src=".github/badges/coverage.svg" alt="Coverage status" />
-    <a href="https://astariul.github.io/gibbs"><img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https%3A%2F%2Fastariul.github.io%2Fgibbs" alt="Docs" /></a>
-    <a href="https://github.com/astariul/gibbs/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="licence" /></a>
+    <a href="https://astariul.github.io/pintel"><img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https%3A%2F%2Fastariul.github.io%2Fpintel" alt="Docs" /></a>
+    <a href="https://github.com/astariul/pintel/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="licence" /></a>
 </p>
 
 <p align="center">
@@ -19,15 +19,15 @@ Scale your ML workers asynchronously across processes and machines
   <a href="#faq">FAQ</a> •
   <a href="#contribute">Contribute</a>
   <br>
-  <a href="https://astariul.github.io/gibbs/" target="_blank">Documentation</a>
+  <a href="https://astariul.github.io/pintel/" target="_blank">Documentation</a>
 </p>
 
 
 <h2 align="center">Description</h2>
 
-**`gibbs`** is a python package that helps you scale your ML workers (or any python code) across processes and machines, asynchronously.
+**`pintel`** is a python package that helps you scale your ML workers (or any python code) across processes and machines, asynchronously.
 
-`gibbs` is :
+`pintel` is :
 
 * ⚡️ Highly performant
 * 🔀 Asynchronous
@@ -36,11 +36,11 @@ Scale your ML workers asynchronously across processes and machines
 
 <h2 align="center">Install</h2>
 
-Install `gibbs` by running :
+Install `pintel` by running :
 
 
 ```
-pip install gibbs
+pip install pintel
 ```
 
 
@@ -64,7 +64,7 @@ class MyAwesomeModel:
 You can simply start a few workers serving the model :
 
 ```python
-from gibbs import Worker
+from pintel import Worker
 
 for _ in range(4):
     Worker(MyAwesomeModel).start()
@@ -73,7 +73,7 @@ for _ in range(4):
 And send requests through the Hub :
 
 ```python
-from gibbs import Hub
+from pintel import Hub
 
 hub = Hub()
 
@@ -85,22 +85,22 @@ And that's it !
 
 ---
 
-Make sure to check the [documentation](https://astariul.github.io/gibbs/usage/) for a more detailed explanation.
+Make sure to check the [documentation](https://astariul.github.io/pintel/usage/) for a more detailed explanation.
 
 Or you can run some examples from the `examples/` folder.
 
 
 <h2 align="center">FAQ</h2>
 
-#### ❓ **How `gibbs` works ?**
+#### ❓ **How `pintel` works ?**
 
-`gibbs` simply run your model code in separate processes, and send requests to the right process to ensure requests are treated in parallel.
+`pintel` simply run your model code in separate processes, and send requests to the right process to ensure requests are treated in parallel.
 
-`gibbs` uses a modified form of [the Paranoid Pirate Pattern from the zmq guide](https://zguide.zeromq.org/docs/chapter4/#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern).
+`pintel` uses a modified form of [the Paranoid Pirate Pattern from the zmq guide](https://zguide.zeromq.org/docs/chapter4/#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern).
 
-#### ❓ **Why the name "gibbs" ?**
+#### ❓ **Why the name "pintel" ?**
 
-Joshamee Gibbs is the devoted first mate of Captain Jack Sparrow.  
+Pintel is one of the pirates of Captain Barbossa's crew on the Black Pearl.  
 Since we are using the Paranoid Pirate Pattern, we needed a pirate name !
 
 <h2 align="center">Contribute</h2>

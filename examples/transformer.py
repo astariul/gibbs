@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from transformers import BartForConditionalGeneration, BartTokenizer
 
-from gibbs import Hub, Worker
+from pintel import Hub, Worker
 
 
 PORT = 8000
